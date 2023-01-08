@@ -3,6 +3,7 @@ package com.github.lexakimov.omm.traversing.types;
 import com.github.lexakimov.omm.MemoryMeasureUtil;
 import com.github.lexakimov.omm.util.ReflectionUtils;
 import com.github.lexakimov.omm.util.TriFunction;
+import lombok.EqualsAndHashCode;
 import lombok.SneakyThrows;
 import lombok.val;
 import lombok.var;
@@ -15,6 +16,7 @@ import java.util.List;
  * @author akimov
  * created at: 08.01.2023 09:46
  */
+@EqualsAndHashCode(callSuper = true)
 public class ObjectVariable extends Variable {
 
     private final List<Variable> nestedNonNullFields = new LinkedList<>();
