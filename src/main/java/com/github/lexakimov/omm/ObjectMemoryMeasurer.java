@@ -1,9 +1,9 @@
 package com.github.lexakimov.omm;
 
-import com.github.lexakimov.omm.traversing.types.ArrayOfPrimitivesVariable;
-import com.github.lexakimov.omm.traversing.types.ObjectVariable;
-import com.github.lexakimov.omm.traversing.types.PrimitiveVariable;
-import com.github.lexakimov.omm.traversing.types.Variable;
+import com.github.lexakimov.omm.types.ArrayOfPrimitivesVariable;
+import com.github.lexakimov.omm.types.ObjectVariable;
+import com.github.lexakimov.omm.types.PrimitiveVariable;
+import com.github.lexakimov.omm.types.Variable;
 import lombok.var;
 import java.util.Deque;
 import java.util.LinkedList;

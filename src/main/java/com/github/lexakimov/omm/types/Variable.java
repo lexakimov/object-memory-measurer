@@ -1,4 +1,4 @@
-package com.github.lexakimov.omm.traversing.types;
+package com.github.lexakimov.omm.types;
 
 import com.github.lexakimov.omm.util.TriFunction;
 import lombok.EqualsAndHashCode;

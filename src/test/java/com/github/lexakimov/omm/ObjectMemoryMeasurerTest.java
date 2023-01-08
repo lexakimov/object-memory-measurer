@@ -7,9 +7,9 @@ import com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneLongAndOneNull
 import com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneLongAndTwoNullObject;
 import com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneNonNullObject;
 import com.github.lexakimov.omm.classes.EmptyClass;
-import com.github.lexakimov.omm.traversing.types.ArrayOfPrimitivesVariable;
-import com.github.lexakimov.omm.traversing.types.ObjectVariable;
-import com.github.lexakimov.omm.traversing.types.PrimitiveVariable;
+import com.github.lexakimov.omm.types.ArrayOfPrimitivesVariable;
+import com.github.lexakimov.omm.types.ObjectVariable;
+import com.github.lexakimov.omm.types.PrimitiveVariable;
 import lombok.var;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

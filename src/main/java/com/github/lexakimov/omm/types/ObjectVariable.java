@@ -1,4 +1,4 @@
-package com.github.lexakimov.omm.traversing.types;
+package com.github.lexakimov.omm.types;
 
 import com.github.lexakimov.omm.MemoryMeasureUtil;
 import com.github.lexakimov.omm.util.ReflectionUtils;
