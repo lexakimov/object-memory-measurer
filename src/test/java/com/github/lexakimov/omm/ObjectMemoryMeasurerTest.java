@@ -7,6 +7,7 @@ import com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneLong;
 import com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneLongAndOneNullObject;
 import com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneLongAndTwoNullObject;
 import com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneNonNullObject;
+import com.github.lexakimov.omm.classes.ClassWithTwoNonNullObjects;
 import com.github.lexakimov.omm.classes.ClassWithoutFields;
 import com.github.lexakimov.omm.classes.NonAbstractClass1;
 import com.github.lexakimov.omm.classes.NonAbstractClass2;
@@ -274,7 +275,8 @@ class ObjectMemoryMeasurerTest {
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", ClassWithoutFields.FQN)
-                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L);
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 0L);
         }
 
         @Test
@@ -286,7 +288,8 @@ class ObjectMemoryMeasurerTest {
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", ClassWithOneIntField.FQN)
-                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L);
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 0L);
         }
 
         @Test
@@ -298,7 +301,8 @@ class ObjectMemoryMeasurerTest {
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", ClassWithTwoIntField.FQN)
-                    .hasFieldOrPropertyWithValue("sizeInBytes", 24L);
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 24L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 0L);
         }
 
         @Test
@@ -310,7 +314,8 @@ class ObjectMemoryMeasurerTest {
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", ClassWithTwoIntFieldAndOneLong.FQN)
-                    .hasFieldOrPropertyWithValue("sizeInBytes", 32L);
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 32L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 0L);
         }
 
         @Test
@@ -335,6 +340,7 @@ class ObjectMemoryMeasurerTest {
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", ClassWithTwoIntFieldAndOneLongAndTwoNullObject.FQN)
                     .hasFieldOrPropertyWithValue("sizeInBytes", 40L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 0L)
                     .matches(t -> ((ObjectVariable) t).getNestedVariables().isEmpty());
         }
 
@@ -347,7 +353,8 @@ class ObjectMemoryMeasurerTest {
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", ClassWithTwoIntFieldAndOneNonNullObject.FQN)
-                    .hasFieldOrPropertyWithValue("sizeInBytes", 24L);
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 40L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 16L);
 
             ObjectVariable objectType = (ObjectVariable) graphRoot;
 
@@ -355,7 +362,64 @@ class ObjectMemoryMeasurerTest {
             assertThat(nestedVariables).hasSize(1).singleElement()
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", ClassWithTwoIntFieldAndOneNonNullObject.SomeObject.FQN)
-                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L);
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 0L);
+        }
+
+        @Test
+        void traverseObjectType_8() {
+            var uut = new ObjectMemoryMeasurer();
+            var i = new ClassWithTwoNonNullObjects();
+            uut.traverse(i);
+            var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
+            assertThat(graphRoot)
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("name", "Root")
+                    .hasFieldOrPropertyWithValue("typeString", ClassWithTwoNonNullObjects.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 20672L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 20648L);
+
+            var nestedVariables1 = ((ObjectVariable) graphRoot).getNestedVariables();
+            var obj1 = nestedVariables1.get(0);
+            assertThat(obj1)
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("name", "obj1")
+                    .hasFieldOrPropertyWithValue("typeString", ClassWithTwoNonNullObjects.NonNullObject1.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 4128L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 4112L);
+
+            var nestedVariables2 = ((ObjectVariable) obj1).getNestedVariables();
+            var obj1_1 = nestedVariables2.get(0);
+            assertThat(obj1_1)
+                    .isExactlyInstanceOf(ArrayOfPrimitivesVariable.class)
+                    .hasFieldOrPropertyWithValue("name", "obj1_1")
+                    .hasFieldOrPropertyWithValue("typeString", int[].class.getTypeName())
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 4112L);
+
+            var obj2 = nestedVariables1.get(1);
+            assertThat(obj2)
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("name", "obj2")
+                    .hasFieldOrPropertyWithValue("typeString", ClassWithTwoNonNullObjects.NonNullObject2.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 16520L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 16496L);
+
+            var nestedVariables3 = ((ObjectVariable) obj2).getNestedVariables();
+            var obj2_1 = nestedVariables3.get(0);
+            assertThat(obj2_1)
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("name", "obj2_1")
+                    .hasFieldOrPropertyWithValue("typeString", ClassWithTwoNonNullObjects.NonNullObject3.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 8248L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 8224L);
+
+            var obj2_2 = nestedVariables3.get(1);
+            assertThat(obj2_2)
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("name", "obj2_2")
+                    .hasFieldOrPropertyWithValue("typeString", ClassWithTwoNonNullObjects.NonNullObject3.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 8248L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 8224L);
         }
     }
 
