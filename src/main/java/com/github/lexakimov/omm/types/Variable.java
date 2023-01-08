@@ -4,7 +4,6 @@ import com.github.lexakimov.omm.MemoryMeasureUtil;
 import com.github.lexakimov.omm.util.TriFunction;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.ToString;
 import java.util.Deque;
 
 /**
@@ -30,12 +29,13 @@ public abstract class Variable {
 
     }
 
-    @ToString.Include
     public String getTypeString() {
         return object.getClass().getTypeName();
     }
 
-    @ToString.Include
+    /**
+     * @return total size of object (with nested)
+     */
     public long getSizeInBytes() {
         return MemoryMeasureUtil.getSizeInBytes(object);
     }

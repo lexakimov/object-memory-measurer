@@ -2,12 +2,14 @@ package com.github.lexakimov.omm;
 
 import com.github.lexakimov.omm.types.ArrayOfObjects;
 import com.github.lexakimov.omm.types.ArrayOfPrimitivesVariable;
+import com.github.lexakimov.omm.types.HasNestedVariables;
 import com.github.lexakimov.omm.types.ObjectVariable;
 import com.github.lexakimov.omm.types.PrimitiveVariable;
 import com.github.lexakimov.omm.types.Variable;
 import lombok.var;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author akimov
@@ -19,42 +21,57 @@ public class ObjectMemoryMeasurer {
 
     private Variable graphRoot;
 
-    public void traverseFor(boolean object) {
+    public void traverse(boolean object) {
+        checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverseFor(byte object) {
+    public void traverse(byte object) {
+        checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverseFor(char object) {
+    public void traverse(char object) {
+        checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverseFor(short object) {
+    public void traverse(short object) {
+        checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverseFor(int object) {
+    public void traverse(int object) {
+        checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverseFor(float object) {
+    public void traverse(float object) {
+        checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverseFor(long object) {
+    public void traverse(long object) {
+        checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverseFor(double object) {
+    public void traverse(double object) {
+        checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverseFor(Object object) {
+    public void traverse(Object object) {
+        checkNoInteraction();
         graphRoot = variableFactory("Root", object, false);
         stack.push(graphRoot);
         makeTraverse();
+    }
+
+    private void checkNoInteraction() {
+        if (graphRoot != null) {
+            throw new IllegalStateException("traverse method cannot be called more than once");
+        }
     }
 
     private void makeTraverse() {

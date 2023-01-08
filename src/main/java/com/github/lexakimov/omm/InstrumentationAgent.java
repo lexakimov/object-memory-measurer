@@ -12,7 +12,7 @@ public final class InstrumentationAgent {
     private static volatile Instrumentation globalInstrumentation;
 
     public static final String ERROR_MSG = "Instrumentation is not setup properly. " +
-                                           "You have to pass VM option '-javaagent:path/to/object-memory-meter.jar'";
+                                           "You have to pass VM option '-javaagent:path/to/object-memory-measurer.jar'";
 
     public static void premain(final String agentArgs, final Instrumentation inst) {
         if (globalInstrumentation != null) {

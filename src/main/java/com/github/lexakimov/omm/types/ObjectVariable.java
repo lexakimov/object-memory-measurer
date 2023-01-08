@@ -17,10 +17,12 @@ import java.util.List;
  * created at: 08.01.2023 09:46
  */
 @EqualsAndHashCode(callSuper = true)
-public class ObjectVariable extends Variable {
+public class ObjectVariable extends Variable implements HasNestedVariables {
 
     @Getter
-    private final List<Variable> nestedNonNullFields = new LinkedList<>();
+    protected final List<Variable> nestedVariables = new LinkedList<>();
+
+    private long nestedVariablesSize = -1;
 
     public ObjectVariable(String name, Object object) {
         super(name, object);
@@ -35,7 +37,7 @@ public class ObjectVariable extends Variable {
             val isPrimitive = field.getType().isPrimitive();
             val variable = factoryMethod.apply(field.getName(), fieldValue, isPrimitive);
             if (variable != null) {
-                nestedNonNullFields.add(variable);
+                nestedVariables.add(variable);
                 stack.push(variable);
             }
         }
@@ -47,7 +49,26 @@ public class ObjectVariable extends Variable {
                "name:'" + name + "', " +
                "type: " + getTypeString() + ", " +
                "size: " + getSizeInBytes() + ", " +
-               "non-null fields: " + nestedNonNullFields.size() +
+               "non-null fields: " + nestedVariables.size() +
                " }";
     }
+
+    @Override
+    public long getSizeInBytes() {
+        return (nestedVariablesSize > 0)
+                ? super.getSizeInBytes() + nestedVariablesSize
+                : super.getSizeInBytes();
+    }
+
+    @Override
+    public long getNestedVariablesSizeInBytes() {
+        if (nestedVariablesSize < 0) {
+            nestedVariablesSize = nestedVariables.stream()
+                    .map(HasNestedVariables.class::cast)
+                    .mapToLong(HasNestedVariables::getNestedVariablesSizeInBytes)
+                    .sum();
+        }
+        return nestedVariablesSize;
+    }
+
 }

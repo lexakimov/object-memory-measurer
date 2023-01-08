@@ -1,22 +1,16 @@
 package com.github.lexakimov.omm.types;
 
 import com.github.lexakimov.omm.util.TriFunction;
-import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.val;
 import java.lang.reflect.Array;
 import java.util.Deque;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author akimov
  * created at: 08.01.2023 17:39
  */
-public class ArrayOfObjects extends Variable {
-
-    @Getter
-    private final List<Variable> nestedNonNullFields = new LinkedList<>();
+public class ArrayOfObjects extends ObjectVariable {
 
     public ArrayOfObjects(String name, Object object) {
         super(name, object);
@@ -34,19 +28,9 @@ public class ArrayOfObjects extends Variable {
 
             val variable = factoryMethod.apply("[" + i + "]", arrayElement, false);
             if (variable != null) {
-                nestedNonNullFields.add(variable);
+                nestedVariables.add(variable);
                 stack.push(variable);
             }
         }
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "{ " +
-               "name: '" + name + "', " +
-               "type: " + getTypeString() + ", " +
-               "size: " + getSizeInBytes() + ", " +
-               "non-null fields: " + nestedNonNullFields.size() +
-               " }";
     }
 }

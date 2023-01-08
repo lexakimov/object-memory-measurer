@@ -42,6 +42,16 @@ class ObjectMemoryMeasurerTest {
                 .hasMessage("graph traversal has not yet been completed");
     }
 
+    @Test
+    void alreadyTraversed() {
+        var uut = new ObjectMemoryMeasurer();
+        uut.traverse(1);
+
+        assertThatThrownBy(() -> uut.traverse(1))
+                .isExactlyInstanceOf(IllegalStateException.class)
+                .hasMessage("traverse method cannot be called more than once");
+    }
+
     @Nested
     class Primitives {
 
@@ -49,7 +59,7 @@ class ObjectMemoryMeasurerTest {
         void traverseBoolean() {
             var uut = new ObjectMemoryMeasurer();
             boolean i = true;
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(PrimitiveVariable.class)
@@ -61,7 +71,7 @@ class ObjectMemoryMeasurerTest {
         void traverseByte() {
             var uut = new ObjectMemoryMeasurer();
             byte i = 1;
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(PrimitiveVariable.class)
@@ -73,7 +83,7 @@ class ObjectMemoryMeasurerTest {
         void traverseChar() {
             var uut = new ObjectMemoryMeasurer();
             char i = 1;
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(PrimitiveVariable.class)
@@ -85,7 +95,7 @@ class ObjectMemoryMeasurerTest {
         void traverseShort() {
             var uut = new ObjectMemoryMeasurer();
             short i = 1;
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(PrimitiveVariable.class)
@@ -97,7 +107,7 @@ class ObjectMemoryMeasurerTest {
         void traverseInt() {
             var uut = new ObjectMemoryMeasurer();
             int i = 100;
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(PrimitiveVariable.class)
@@ -109,7 +119,7 @@ class ObjectMemoryMeasurerTest {
         void traverseFloat() {
             var uut = new ObjectMemoryMeasurer();
             float i = 1;
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(PrimitiveVariable.class)
@@ -121,7 +131,7 @@ class ObjectMemoryMeasurerTest {
         void traverseLong() {
             var uut = new ObjectMemoryMeasurer();
             long i = 1;
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(PrimitiveVariable.class)
@@ -133,7 +143,7 @@ class ObjectMemoryMeasurerTest {
         void traverseDouble() {
             var uut = new ObjectMemoryMeasurer();
             double i = 1;
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(PrimitiveVariable.class)
@@ -150,7 +160,7 @@ class ObjectMemoryMeasurerTest {
         void traverseBooleanArray(int size, long sizeInBytes) {
             var uut = new ObjectMemoryMeasurer();
             boolean[] i = new boolean[size];
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfPrimitivesVariable.class)
@@ -163,7 +173,7 @@ class ObjectMemoryMeasurerTest {
         void traverseByteArray(int size, long sizeInBytes) {
             var uut = new ObjectMemoryMeasurer();
             byte[] i = new byte[size];
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfPrimitivesVariable.class)
@@ -176,7 +186,7 @@ class ObjectMemoryMeasurerTest {
         void traverseCharArray(int size, long sizeInBytes) {
             var uut = new ObjectMemoryMeasurer();
             char[] i = new char[size];
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfPrimitivesVariable.class)
@@ -189,7 +199,7 @@ class ObjectMemoryMeasurerTest {
         void traverseShortArray(int size, long sizeInBytes) {
             var uut = new ObjectMemoryMeasurer();
             short[] i = new short[size];
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfPrimitivesVariable.class)
@@ -202,7 +212,7 @@ class ObjectMemoryMeasurerTest {
         void traverseIntArray(int size, long sizeInBytes) {
             var uut = new ObjectMemoryMeasurer();
             int[] i = new int[size];
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfPrimitivesVariable.class)
@@ -215,7 +225,7 @@ class ObjectMemoryMeasurerTest {
         void traverseFloatArray(int size, long sizeInBytes) {
             var uut = new ObjectMemoryMeasurer();
             float[] i = new float[size];
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfPrimitivesVariable.class)
@@ -228,7 +238,7 @@ class ObjectMemoryMeasurerTest {
         void traverseLongArray(int size, long sizeInBytes) {
             var uut = new ObjectMemoryMeasurer();
             long[] i = new long[size];
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfPrimitivesVariable.class)
@@ -241,7 +251,7 @@ class ObjectMemoryMeasurerTest {
         void traverseDoubleArray(int size, long sizeInBytes) {
             var uut = new ObjectMemoryMeasurer();
             double[] i = new double[size];
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfPrimitivesVariable.class)
@@ -259,7 +269,7 @@ class ObjectMemoryMeasurerTest {
         void traverseObjectType_1() {
             var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithoutFields();
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
@@ -271,7 +281,7 @@ class ObjectMemoryMeasurerTest {
         void traverseObjectType_2() {
             var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithOneIntField();
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
@@ -283,7 +293,7 @@ class ObjectMemoryMeasurerTest {
         void traverseObjectType_3() {
             var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithTwoIntField();
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
@@ -295,7 +305,7 @@ class ObjectMemoryMeasurerTest {
         void traverseObjectType_4() {
             var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithTwoIntFieldAndOneLong();
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
@@ -307,7 +317,7 @@ class ObjectMemoryMeasurerTest {
         void traverseObjectType_5() {
             var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithTwoIntFieldAndOneLongAndOneNullObject();
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
@@ -319,20 +329,20 @@ class ObjectMemoryMeasurerTest {
         void traverseObjectType_6() {
             var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithTwoIntFieldAndOneLongAndTwoNullObject();
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", ClassWithTwoIntFieldAndOneLongAndTwoNullObject.FQN)
                     .hasFieldOrPropertyWithValue("sizeInBytes", 40L)
-                    .matches(t -> ((ObjectVariable) t).getNestedNonNullFields().isEmpty());
+                    .matches(t -> ((ObjectVariable) t).getNestedVariables().isEmpty());
         }
 
         @Test
         void traverseObjectType_7() {
             var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithTwoIntFieldAndOneNonNullObject();
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
@@ -341,8 +351,8 @@ class ObjectMemoryMeasurerTest {
 
             ObjectVariable objectType = (ObjectVariable) graphRoot;
 
-            var nestedNonNullFields = objectType.getNestedNonNullFields();
-            assertThat(nestedNonNullFields).hasSize(1).singleElement()
+            var nestedVariables = objectType.getNestedVariables();
+            assertThat(nestedVariables).hasSize(1).singleElement()
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", ClassWithTwoIntFieldAndOneNonNullObject.SomeObject.FQN)
                     .hasFieldOrPropertyWithValue("sizeInBytes", 16L);
@@ -356,7 +366,7 @@ class ObjectMemoryMeasurerTest {
         void traverseObjectArray_1() {
             var uut = new ObjectMemoryMeasurer();
             var i = new Object[]{};
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfObjects.class)
@@ -368,7 +378,7 @@ class ObjectMemoryMeasurerTest {
         void traverseObjectArray_2() {
             var uut = new ObjectMemoryMeasurer();
             var i = new Object[]{null};
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfObjects.class)
@@ -380,7 +390,7 @@ class ObjectMemoryMeasurerTest {
         void traverseObjectArray_3() {
             var uut = new ObjectMemoryMeasurer();
             var i = new Object[]{null, null};
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfObjects.class)
@@ -392,7 +402,7 @@ class ObjectMemoryMeasurerTest {
         void traverseObjectArray_4() {
             var uut = new ObjectMemoryMeasurer();
             var i = new Object[]{null, null, null};
-            uut.traverseFor(i);
+            uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfObjects.class)
@@ -413,7 +423,7 @@ class ObjectMemoryMeasurerTest {
                     null,
                     null
             };
-            uut.traverseFor(i);
+            uut.traverse(i);
             Variable graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfObjects.class)
@@ -422,20 +432,20 @@ class ObjectMemoryMeasurerTest {
 
             ArrayOfObjects objectType = (ArrayOfObjects) graphRoot;
 
-            var nestedNonNullFields = objectType.getNestedNonNullFields();
-            assertThat(nestedNonNullFields).hasSize(3);
+            var nestedVariables = objectType.getNestedVariables();
+            assertThat(nestedVariables).hasSize(3);
 
-            assertThat(nestedNonNullFields.get(0))
+            assertThat(nestedVariables.get(0))
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", NonAbstractClass1.FQN)
                     .hasFieldOrPropertyWithValue("sizeInBytes", 32L);
 
-            assertThat(nestedNonNullFields.get(1))
+            assertThat(nestedVariables.get(1))
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", NonAbstractClass2.FQN)
                     .hasFieldOrPropertyWithValue("sizeInBytes", 40L);
 
-            assertThat(nestedNonNullFields.get(2))
+            assertThat(nestedVariables.get(2))
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", "com.github.lexakimov.omm.ObjectMemoryMeasurerTest$ArraysOfObjects$1")
                     .hasFieldOrPropertyWithValue("sizeInBytes", 32L);
