@@ -1,60 +1,86 @@
 package com.github.lexakimov.omm;
 
-import java.lang.instrument.Instrumentation;
-import static com.github.lexakimov.omm.util.Logger.info;
-import static java.lang.String.format;
+import com.github.lexakimov.omm.traversing.types.ArrayOfPrimitivesVariable;
+import com.github.lexakimov.omm.traversing.types.ObjectVariable;
+import com.github.lexakimov.omm.traversing.types.PrimitiveVariable;
+import com.github.lexakimov.omm.traversing.types.Variable;
+import lombok.var;
+import java.util.Deque;
+import java.util.LinkedList;
 
 /**
  * @author akimov
- * created at: 06.01.2023 13:10
+ * created at: 06.01.2023 15:19
  */
 public class ObjectMemoryMeasurer {
 
-    private static final Instrumentation instrumentation = InstrumentationAgent.instrumentation();
+    private final Deque<Variable> stack = new LinkedList<>();
 
-    public static final String PRINT_WITH_CLASS_NAME_PATTERN = "class: %30s size: %5s";
+    private Variable graphRoot;
 
-    private ObjectMemoryMeasurer() {
+    public void traverseFor(boolean object) {
+        graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public static long getSizeInBytes(Object object) {
-        return instrumentation.getObjectSize(object);
+    public void traverseFor(byte object) {
+        graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public static void printSizeInBytes(Object object) {
-        info(getSizeInBytes(object));
+    public void traverseFor(char object) {
+        graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public static void printWithClassName(boolean object) {
-        info(format(PRINT_WITH_CLASS_NAME_PATTERN, boolean.class.getName(), instrumentation.getObjectSize(object)));
+    public void traverseFor(short object) {
+        graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public static void printWithClassName(byte object) {
-        info(format(PRINT_WITH_CLASS_NAME_PATTERN, byte.class.getName(), instrumentation.getObjectSize(object)));
+    public void traverseFor(int object) {
+        graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public static void printWithClassName(char object) {
-        info(format(PRINT_WITH_CLASS_NAME_PATTERN, char.class.getName(), instrumentation.getObjectSize(object)));
+    public void traverseFor(float object) {
+        graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public static void printWithClassName(short object) {
-        info(format(PRINT_WITH_CLASS_NAME_PATTERN, short.class.getName(), instrumentation.getObjectSize(object)));
+    public void traverseFor(long object) {
+        graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public static void printWithClassName(int object) {
-        info(format(PRINT_WITH_CLASS_NAME_PATTERN, int.class.getName(), instrumentation.getObjectSize(object)));
+    public void traverseFor(double object) {
+        graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public static void printWithClassName(long object) {
-        info(format(PRINT_WITH_CLASS_NAME_PATTERN, long.class.getName(), instrumentation.getObjectSize(object)));
+    public void traverseFor(Object object) {
+        graphRoot = variableFactory("Root", object, false);
+        stack.push(graphRoot);
+        makeTraverse();
     }
 
-    public static void printWithClassName(float object) {
-        info(format(PRINT_WITH_CLASS_NAME_PATTERN, float.class.getName(), instrumentation.getObjectSize(object)));
+    private void makeTraverse() {
+        while (!stack.isEmpty()) {
+            var variable = stack.pop();
+            variable.process(stack, this::variableFactory);
+        }
     }
 
-    public static void printWithClassName(double object) {
-        info(format(PRINT_WITH_CLASS_NAME_PATTERN, double.class.getName(), instrumentation.getObjectSize(object)));
+    private Variable variableFactory(String name, Object object, boolean isPrimitive) {
+        var objectClass = object.getClass();
+
+        if (objectClass.isArray()) {
+            var componentType = objectClass.getComponentType();
+            if (componentType.isPrimitive()) {
+                return new ArrayOfPrimitivesVariable(name, object);
+            }
+        } else if (!objectClass.isPrimitive() && !isPrimitive) {
+            return new ObjectVariable(name, object);
+        }
+        return null;
     }
 
+    public Variable getGraphRoot() {
+        if (graphRoot != null) {
+            return graphRoot;
+        }
+        throw new IllegalStateException("graph traversal has not yet been completed");
+    }
 }

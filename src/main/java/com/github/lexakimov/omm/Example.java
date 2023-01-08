@@ -2,9 +2,9 @@ package com.github.lexakimov.omm;
 
 import com.github.lexakimov.omm.util.Logger;
 import lombok.var;
-import static com.github.lexakimov.omm.ObjectMemoryMeasurer.getSizeInBytes;
-import static com.github.lexakimov.omm.ObjectMemoryMeasurer.printSizeInBytes;
-import static com.github.lexakimov.omm.ObjectMemoryMeasurer.printWithClassName;
+import static com.github.lexakimov.omm.MemoryMeasureUtil.getSizeInBytes;
+import static com.github.lexakimov.omm.MemoryMeasureUtil.printSizeInBytes;
+import static com.github.lexakimov.omm.MemoryMeasureUtil.printWithClassName;
 
 public class Example {
 
