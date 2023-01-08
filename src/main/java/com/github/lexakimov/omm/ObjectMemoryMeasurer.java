@@ -8,8 +8,9 @@ import com.github.lexakimov.omm.types.PrimitiveVariable;
 import com.github.lexakimov.omm.types.Variable;
 import lombok.var;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author akimov
@@ -66,6 +67,7 @@ public class ObjectMemoryMeasurer {
         graphRoot = variableFactory("Root", object, false);
         stack.push(graphRoot);
         makeTraverse();
+        calculateTotalSize();
     }
 
     private void checkNoInteraction() {
@@ -95,6 +97,44 @@ public class ObjectMemoryMeasurer {
             return new ObjectVariable(name, value);
         }
         return null;
+    }
+
+    private void calculateTotalSize() {
+        if (!(graphRoot instanceof HasNestedVariables)) {
+            return;
+        }
+
+        Deque<HasNestedVariables> parents = new LinkedList<>();
+        Map<Integer, Integer> currentChildIndexByDepth = new HashMap<>();
+
+        parents.push(((HasNestedVariables) graphRoot));
+        int currentDepth = 0;
+
+        while (!parents.isEmpty()) {
+            var parent = parents.peek();
+            var nested = parent.getNestedVariables();
+            var i = currentChildIndexByDepth.getOrDefault(currentDepth, -1);
+
+            if (nested.isEmpty() || i + 1 >= nested.size()) {
+                parents.pop().getNestedVariablesSizeInBytes();
+                currentChildIndexByDepth.remove(currentDepth);
+                currentDepth--;
+            } else {
+                i++;
+                var variable = nested.get(i);
+                if (variable instanceof HasNestedVariables) {
+                    var nestedVariable = (HasNestedVariables) variable;
+                    parents.push(nestedVariable);
+                    currentChildIndexByDepth.put(currentDepth, i);
+                    currentDepth++;
+                } else {
+                    parents.pop().getNestedVariablesSizeInBytes();// i > 0 ?
+                    currentChildIndexByDepth.remove(currentDepth);
+                    currentDepth--;
+                }
+            }
+        }
+
     }
 
     public Variable getGraphRoot() {

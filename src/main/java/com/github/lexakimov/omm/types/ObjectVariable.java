@@ -63,10 +63,7 @@ public class ObjectVariable extends Variable implements HasNestedVariables {
     @Override
     public long getNestedVariablesSizeInBytes() {
         if (nestedVariablesSize < 0) {
-            nestedVariablesSize = nestedVariables.stream()
-                    .map(HasNestedVariables.class::cast)
-                    .mapToLong(HasNestedVariables::getNestedVariablesSizeInBytes)
-                    .sum();
+            nestedVariablesSize = nestedVariables.stream().mapToLong(Variable::getSizeInBytes).sum();
         }
         return nestedVariablesSize;
     }
