@@ -1,8 +1,10 @@
 package com.github.lexakimov.omm.types;
 
+import com.github.lexakimov.omm.MemoryMeasureUtil;
 import com.github.lexakimov.omm.util.TriFunction;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import java.util.Deque;
 
 /**
@@ -28,7 +30,22 @@ public abstract class Variable {
 
     }
 
-    public abstract String getTypeString();
+    @ToString.Include
+    public String getTypeString() {
+        return object.getClass().getTypeName();
+    }
 
-    public abstract long getSizeInBytes();
+    @ToString.Include
+    public long getSizeInBytes() {
+        return MemoryMeasureUtil.getSizeInBytes(object);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{ " +
+               "name:'" + name + "', " +
+               "type: " + getTypeString() + ", " +
+               "size: " + getSizeInBytes() +
+               " }";
+    }
 }

@@ -1,15 +1,20 @@
 package com.github.lexakimov.omm;
 
+import com.github.lexakimov.omm.classes.AbstractClass;
 import com.github.lexakimov.omm.classes.ClassWithOneIntField;
 import com.github.lexakimov.omm.classes.ClassWithTwoIntField;
 import com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneLong;
 import com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneLongAndOneNullObject;
 import com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneLongAndTwoNullObject;
 import com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneNonNullObject;
-import com.github.lexakimov.omm.classes.EmptyClass;
+import com.github.lexakimov.omm.classes.ClassWithoutFields;
+import com.github.lexakimov.omm.classes.NonAbstractClass1;
+import com.github.lexakimov.omm.classes.NonAbstractClass2;
+import com.github.lexakimov.omm.types.ArrayOfObjects;
 import com.github.lexakimov.omm.types.ArrayOfPrimitivesVariable;
 import com.github.lexakimov.omm.types.ObjectVariable;
 import com.github.lexakimov.omm.types.PrimitiveVariable;
+import com.github.lexakimov.omm.types.Variable;
 import lombok.var;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -249,17 +254,17 @@ class ObjectMemoryMeasurerTest {
     @Nested
     class Objects {
 
+        @SuppressWarnings("InstantiationOfUtilityClass")
         @Test
         void traverseObjectType_1() {
             var uut = new ObjectMemoryMeasurer();
-            var i = new EmptyClass();
+            var i = new ClassWithoutFields();
             uut.traverseFor(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ObjectVariable.class)
-                    .hasFieldOrPropertyWithValue("typeString", EmptyClass.FQN)
-                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L)
-            ;
+                    .hasFieldOrPropertyWithValue("typeString", ClassWithoutFields.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L);
         }
 
         @Test
@@ -341,9 +346,100 @@ class ObjectMemoryMeasurerTest {
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", ClassWithTwoIntFieldAndOneNonNullObject.SomeObject.FQN)
                     .hasFieldOrPropertyWithValue("sizeInBytes", 16L);
-
         }
     }
 
+    @Nested
+    class ArraysOfObjects {
+
+        @Test
+        void traverseObjectArray_1() {
+            var uut = new ObjectMemoryMeasurer();
+            var i = new Object[]{};
+            uut.traverseFor(i);
+            var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
+            assertThat(graphRoot)
+                    .isExactlyInstanceOf(ArrayOfObjects.class)
+                    .hasFieldOrPropertyWithValue("typeString", "java.lang.Object[]")
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L);
+        }
+
+        @Test
+        void traverseObjectArray_2() {
+            var uut = new ObjectMemoryMeasurer();
+            var i = new Object[]{null};
+            uut.traverseFor(i);
+            var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
+            assertThat(graphRoot)
+                    .isExactlyInstanceOf(ArrayOfObjects.class)
+                    .hasFieldOrPropertyWithValue("typeString", "java.lang.Object[]")
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 24L);
+        }
+
+        @Test
+        void traverseObjectArray_3() {
+            var uut = new ObjectMemoryMeasurer();
+            var i = new Object[]{null, null};
+            uut.traverseFor(i);
+            var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
+            assertThat(graphRoot)
+                    .isExactlyInstanceOf(ArrayOfObjects.class)
+                    .hasFieldOrPropertyWithValue("typeString", "java.lang.Object[]")
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 24L);
+        }
+
+        @Test
+        void traverseObjectArray_4() {
+            var uut = new ObjectMemoryMeasurer();
+            var i = new Object[]{null, null, null};
+            uut.traverseFor(i);
+            var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
+            assertThat(graphRoot)
+                    .isExactlyInstanceOf(ArrayOfObjects.class)
+                    .hasFieldOrPropertyWithValue("typeString", "java.lang.Object[]")
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 32L);
+        }
+
+        @Test
+        void traverseObjectArray_5() {
+            var uut = new ObjectMemoryMeasurer();
+            var i = new AbstractClass[]{
+                    null,
+                    null,
+                    new NonAbstractClass1(),
+                    new NonAbstractClass2(),
+                    new AbstractClass() {
+                    },
+                    null,
+                    null
+            };
+            uut.traverseFor(i);
+            Variable graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
+            assertThat(graphRoot)
+                    .isExactlyInstanceOf(ArrayOfObjects.class)
+                    .hasFieldOrPropertyWithValue("typeString", AbstractClass.FQN + "[]")
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 48L);
+
+            ArrayOfObjects objectType = (ArrayOfObjects) graphRoot;
+
+            var nestedNonNullFields = objectType.getNestedNonNullFields();
+            assertThat(nestedNonNullFields).hasSize(3);
+
+            assertThat(nestedNonNullFields.get(0))
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("typeString", NonAbstractClass1.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 32L);
+
+            assertThat(nestedNonNullFields.get(1))
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("typeString", NonAbstractClass2.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 40L);
+
+            assertThat(nestedNonNullFields.get(2))
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("typeString", "com.github.lexakimov.omm.ObjectMemoryMeasurerTest$ArraysOfObjects$1")
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 32L);
+        }
+    }
 
 }

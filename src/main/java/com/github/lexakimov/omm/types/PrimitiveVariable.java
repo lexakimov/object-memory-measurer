@@ -13,49 +13,49 @@ public final class PrimitiveVariable extends Variable {
 
     public PrimitiveVariable(String name, boolean i) {
         super(name, i);
-        type = boolean.class.getName();
+        type = boolean.class.getTypeName();
         sizeInBytes = MemoryMeasureUtil.getSizeInBytes(i);
     }
 
     public PrimitiveVariable(String name, byte i) {
-        super(name, byte.class.getName());
-        type = byte.class.getName();
+        super(name, i);
+        type = byte.class.getTypeName();
         sizeInBytes = MemoryMeasureUtil.getSizeInBytes(i);
     }
 
     public PrimitiveVariable(String name, char i) {
-        super(name, char.class.getName());
-        type = char.class.getName();
+        super(name, i);
+        type = char.class.getTypeName();
         sizeInBytes = MemoryMeasureUtil.getSizeInBytes(i);
     }
 
     public PrimitiveVariable(String name, short i) {
-        super(name, short.class.getName());
-        type = short.class.getName();
+        super(name, i);
+        type = short.class.getTypeName();
         sizeInBytes = MemoryMeasureUtil.getSizeInBytes(i);
     }
 
     public PrimitiveVariable(String name, int i) {
-        super(name, int.class.getName());
-        type = int.class.getName();
+        super(name, i);
+        type = int.class.getTypeName();
         sizeInBytes = MemoryMeasureUtil.getSizeInBytes(i);
     }
 
     public PrimitiveVariable(String name, float i) {
-        super(name, float.class.getName());
-        type = float.class.getName();
+        super(name, i);
+        type = float.class.getTypeName();
         sizeInBytes = MemoryMeasureUtil.getSizeInBytes(i);
     }
 
     public PrimitiveVariable(String name, long i) {
-        super(name, long.class.getName());
-        type = long.class.getName();
+        super(name, i);
+        type = long.class.getTypeName();
         sizeInBytes = MemoryMeasureUtil.getSizeInBytes(i);
     }
 
     public PrimitiveVariable(String name, double i) {
-        super(name, double.class.getName());
-        type = double.class.getName();
+        super(name, i);
+        type = double.class.getTypeName();
         sizeInBytes = MemoryMeasureUtil.getSizeInBytes(i);
     }
 

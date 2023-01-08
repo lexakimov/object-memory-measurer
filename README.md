@@ -32,7 +32,7 @@ traverser.get()
 -javaagent:path/to/object-memory-measurer-0.1.0.jar
 ```
 
-Для версий Java >= 9 может потребоваться указание дополнительный параметров;
+Для версий Java >= 9 может потребоваться указание дополнительных параметров;
 ```shell
 --add-opens java.base/java.lang=ALL-UNNAMED
 --add-opens java.base/java.util=ALL-UNNAMED

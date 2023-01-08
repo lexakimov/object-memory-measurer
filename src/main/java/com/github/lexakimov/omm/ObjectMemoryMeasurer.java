@@ -1,5 +1,6 @@
 package com.github.lexakimov.omm;
 
+import com.github.lexakimov.omm.types.ArrayOfObjects;
 import com.github.lexakimov.omm.types.ArrayOfPrimitivesVariable;
 import com.github.lexakimov.omm.types.ObjectVariable;
 import com.github.lexakimov.omm.types.PrimitiveVariable;
@@ -63,16 +64,18 @@ public class ObjectMemoryMeasurer {
         }
     }
 
-    private Variable variableFactory(String name, Object object, boolean isPrimitive) {
-        var objectClass = object.getClass();
+    private Variable variableFactory(String name, Object value, boolean isPrimitive) {
+        var objectClass = value.getClass();
 
         if (objectClass.isArray()) {
             var componentType = objectClass.getComponentType();
             if (componentType.isPrimitive()) {
-                return new ArrayOfPrimitivesVariable(name, object);
+                return new ArrayOfPrimitivesVariable(name, value);
+            } else {
+                return new ArrayOfObjects(name, value);
             }
         } else if (!objectClass.isPrimitive() && !isPrimitive) {
-            return new ObjectVariable(name, object);
+            return new ObjectVariable(name, value);
         }
         return null;
     }

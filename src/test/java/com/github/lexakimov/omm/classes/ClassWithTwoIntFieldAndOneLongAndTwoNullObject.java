@@ -4,8 +4,8 @@ package com.github.lexakimov.omm.classes;
  * @author akimov
  * created at: 08.01.2023 10:04
  */
+@SuppressWarnings("ConstantValue")
 public class ClassWithTwoIntFieldAndOneLongAndTwoNullObject {
-
     public static final String FQN = "com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneLongAndTwoNullObject";
 
     static {

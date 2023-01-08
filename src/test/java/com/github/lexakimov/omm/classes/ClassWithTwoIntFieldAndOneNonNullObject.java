@@ -4,8 +4,8 @@ package com.github.lexakimov.omm.classes;
  * @author akimov
  * created at: 08.01.2023 13:24
  */
+@SuppressWarnings("ConstantValue")
 public class ClassWithTwoIntFieldAndOneNonNullObject {
-
     public static final String FQN = "com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneNonNullObject";
 
     static {
@@ -16,8 +16,8 @@ public class ClassWithTwoIntFieldAndOneNonNullObject {
     Object d = new SomeObject();
 
     public static class SomeObject {
-
-        public static final String FQN = "com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneNonNullObject$SomeObject";
+        public static final String FQN =
+                "com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneNonNullObject$SomeObject";
 
         static {
             assert FQN.equals(SomeObject.class.getName());
