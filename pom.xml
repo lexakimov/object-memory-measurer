@@ -82,7 +82,7 @@
                     <archive>
                         <manifest>
                             <mainClass>
-                                com.github.lexakimov.omm.Example
+                                com.github.lexakimov.omm.example.ObjectMemoryMeasurerExample
                             </mainClass>
                         </manifest>
                         <manifestEntries>
