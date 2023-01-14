@@ -1,4 +1,4 @@
-package com.github.lexakimov.omm;
+package com.github.lexakimov.omm.example;
 
 import com.github.lexakimov.omm.util.Logger;
 import lombok.var;
@@ -6,7 +6,7 @@ import static com.github.lexakimov.omm.MemoryMeasureUtil.getSizeInBytes;
 import static com.github.lexakimov.omm.MemoryMeasureUtil.printSizeInBytes;
 import static com.github.lexakimov.omm.MemoryMeasureUtil.printWithClassName;
 
-public class Example {
+public class MemoryMeasureUtilExample {
 
     public static void main(String[] args) {
         printWithClassName(true);
