@@ -20,7 +20,14 @@ class MemoryMeasureUtilTest {
 
         @Test
         void primitiveTypeChar() {
-            boolean c = true;
+            char c = 'a';
+            var sizeInBytes = MemoryMeasureUtil.getSizeInBytes(c);
+            assertThat(sizeInBytes).isEqualTo(16);
+        }
+
+        @Test
+        void primitiveTypeChar2() {
+            char c = 'ᠽ';
             var sizeInBytes = MemoryMeasureUtil.getSizeInBytes(c);
             assertThat(sizeInBytes).isEqualTo(16);
         }
