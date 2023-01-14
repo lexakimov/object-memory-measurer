@@ -58,8 +58,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseBoolean() {
-            var uut = new ObjectMemoryMeasurer();
             boolean i = true;
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -70,8 +70,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseByte() {
-            var uut = new ObjectMemoryMeasurer();
             byte i = 1;
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -82,8 +82,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseChar() {
-            var uut = new ObjectMemoryMeasurer();
             char i = 1;
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -94,8 +94,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseShort() {
-            var uut = new ObjectMemoryMeasurer();
             short i = 1;
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -106,8 +106,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseInt() {
-            var uut = new ObjectMemoryMeasurer();
             int i = 100;
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -118,8 +118,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseFloat() {
-            var uut = new ObjectMemoryMeasurer();
             float i = 1;
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -130,8 +130,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseLong() {
-            var uut = new ObjectMemoryMeasurer();
             long i = 1;
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -142,8 +142,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseDouble() {
-            var uut = new ObjectMemoryMeasurer();
             double i = 1;
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -159,8 +159,8 @@ class ObjectMemoryMeasurerTest {
         @ParameterizedTest
         @CsvSource({"0, 16", "1, 24", "2, 24", "3, 24", "10, 32", "100, 120"})
         void traverseBooleanArray(int size, long sizeInBytes) {
-            var uut = new ObjectMemoryMeasurer();
             boolean[] i = new boolean[size];
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -172,8 +172,8 @@ class ObjectMemoryMeasurerTest {
         @ParameterizedTest
         @CsvSource({"0, 16", "1, 24", "2, 24", "3, 24", "10, 32", "100, 120"})
         void traverseByteArray(int size, long sizeInBytes) {
-            var uut = new ObjectMemoryMeasurer();
             byte[] i = new byte[size];
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -185,8 +185,8 @@ class ObjectMemoryMeasurerTest {
         @ParameterizedTest
         @CsvSource({"0, 16", "1, 24", "2, 24", "3, 24", "10, 40", "100, 216"})
         void traverseCharArray(int size, long sizeInBytes) {
-            var uut = new ObjectMemoryMeasurer();
             char[] i = new char[size];
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -198,8 +198,8 @@ class ObjectMemoryMeasurerTest {
         @ParameterizedTest
         @CsvSource({"0, 16", "1, 24", "2, 24", "3, 24", "10, 40", "100, 216"})
         void traverseShortArray(int size, long sizeInBytes) {
-            var uut = new ObjectMemoryMeasurer();
             short[] i = new short[size];
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -211,8 +211,8 @@ class ObjectMemoryMeasurerTest {
         @ParameterizedTest
         @CsvSource({"0, 16", "1, 24", "2, 24", "3, 32", "10, 56", "100, 416"})
         void traverseIntArray(int size, long sizeInBytes) {
-            var uut = new ObjectMemoryMeasurer();
             int[] i = new int[size];
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -224,8 +224,8 @@ class ObjectMemoryMeasurerTest {
         @ParameterizedTest
         @CsvSource({"0, 16", "1, 24", "2, 24", "3, 32", "10, 56", "100, 416"})
         void traverseFloatArray(int size, long sizeInBytes) {
-            var uut = new ObjectMemoryMeasurer();
             float[] i = new float[size];
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -237,8 +237,8 @@ class ObjectMemoryMeasurerTest {
         @ParameterizedTest
         @CsvSource({"0, 16", "1, 24", "2, 32", "3, 40", "10, 96", "100, 816"})
         void traverseLongArray(int size, long sizeInBytes) {
-            var uut = new ObjectMemoryMeasurer();
             long[] i = new long[size];
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -250,8 +250,8 @@ class ObjectMemoryMeasurerTest {
         @ParameterizedTest
         @CsvSource({"0, 16", "1, 24", "2, 32", "3, 40", "10, 96", "100, 816"})
         void traverseDoubleArray(int size, long sizeInBytes) {
-            var uut = new ObjectMemoryMeasurer();
             double[] i = new double[size];
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -268,8 +268,8 @@ class ObjectMemoryMeasurerTest {
         @SuppressWarnings("InstantiationOfUtilityClass")
         @Test
         void traverseObjectType_1() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithoutFields();
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -281,8 +281,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseObjectType_2() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithOneIntField();
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -294,8 +294,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseObjectType_3() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithTwoIntField();
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -307,8 +307,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseObjectType_4() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithTwoIntFieldAndOneLong();
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -320,8 +320,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseObjectType_5() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithTwoIntFieldAndOneLongAndOneNullObject();
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -332,8 +332,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseObjectType_6() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithTwoIntFieldAndOneLongAndTwoNullObject();
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -346,8 +346,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseObjectType_7() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithTwoIntFieldAndOneNonNullObject();
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -368,8 +368,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseObjectType_8() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new ClassWithTwoNonNullObjects();
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -428,8 +428,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseObjectArray_1() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new Object[]{};
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -440,8 +440,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseObjectArray_2() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new Object[]{null};
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -452,8 +452,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseObjectArray_3() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new Object[]{null, null};
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -464,8 +464,8 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseObjectArray_4() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new Object[]{null, null, null};
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
@@ -476,7 +476,6 @@ class ObjectMemoryMeasurerTest {
 
         @Test
         void traverseObjectArray_5() {
-            var uut = new ObjectMemoryMeasurer();
             var i = new AbstractClass[]{
                     null,
                     null,
@@ -487,6 +486,7 @@ class ObjectMemoryMeasurerTest {
                     null,
                     null
             };
+            var uut = new ObjectMemoryMeasurer();
             uut.traverse(i);
             Variable graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
             assertThat(graphRoot)
