@@ -1,11 +1,14 @@
 package com.github.lexakimov.omm;
 
+import com.github.lexakimov.omm.printers.FootprintProcessor;
+import com.github.lexakimov.omm.printers.FootprintResult;
 import com.github.lexakimov.omm.types.ArrayOfObjects;
 import com.github.lexakimov.omm.types.ArrayOfPrimitivesVariable;
 import com.github.lexakimov.omm.types.HasNestedVariables;
 import com.github.lexakimov.omm.types.ObjectVariable;
 import com.github.lexakimov.omm.types.PrimitiveVariable;
 import com.github.lexakimov.omm.types.Variable;
+import lombok.val;
 import lombok.var;
 import java.util.Deque;
 import java.util.HashMap;
@@ -22,47 +25,51 @@ public class ObjectMemoryMeasurer {
 
     private Variable graphRoot;
 
-    public void traverse(boolean object) {
+    ObjectMemoryMeasurer() {
+
+    }
+
+    void traverse(boolean object) {
         checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverse(byte object) {
+    void traverse(byte object) {
         checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverse(char object) {
+    void traverse(char object) {
         checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverse(short object) {
+    void traverse(short object) {
         checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverse(int object) {
+    void traverse(int object) {
         checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverse(float object) {
+    void traverse(float object) {
         checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverse(long object) {
+    void traverse(long object) {
         checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverse(double object) {
+    void traverse(double object) {
         checkNoInteraction();
         graphRoot = new PrimitiveVariable("Root", object);
     }
 
-    public void traverse(Object object) {
+    void traverse(Object object) {
         checkNoInteraction();
         graphRoot = variableFactory("Root", object, false);
         stack.push(graphRoot);
@@ -142,5 +149,67 @@ public class ObjectMemoryMeasurer {
             return graphRoot;
         }
         throw new IllegalStateException("graph traversal has not yet been completed");
+    }
+
+    public FootprintResult getFootprint() {
+        return new FootprintResult(this, new FootprintProcessor());
+    }
+
+    public FootprintResult getFootprint(FootprintProcessor converter) {
+        return new FootprintResult(this, converter);
+    }
+
+    public static ObjectMemoryMeasurer analyze(boolean object) {
+        val measurer = new ObjectMemoryMeasurer();
+        measurer.traverse(object);
+        return measurer;
+    }
+
+    public static ObjectMemoryMeasurer analyze(byte object) {
+        val measurer = new ObjectMemoryMeasurer();
+        measurer.traverse(object);
+        return measurer;
+    }
+
+    public static ObjectMemoryMeasurer analyze(char object) {
+        val measurer = new ObjectMemoryMeasurer();
+        measurer.traverse(object);
+        return measurer;
+    }
+
+    public static ObjectMemoryMeasurer analyze(short object) {
+        val measurer = new ObjectMemoryMeasurer();
+        measurer.traverse(object);
+        return measurer;
+    }
+
+    public static ObjectMemoryMeasurer analyze(int object) {
+        val measurer = new ObjectMemoryMeasurer();
+        measurer.traverse(object);
+        return measurer;
+    }
+
+    public static ObjectMemoryMeasurer analyze(float object) {
+        val measurer = new ObjectMemoryMeasurer();
+        measurer.traverse(object);
+        return measurer;
+    }
+
+    public static ObjectMemoryMeasurer analyze(long object) {
+        val measurer = new ObjectMemoryMeasurer();
+        measurer.traverse(object);
+        return measurer;
+    }
+
+    public static ObjectMemoryMeasurer analyze(double object) {
+        val measurer = new ObjectMemoryMeasurer();
+        measurer.traverse(object);
+        return measurer;
+    }
+
+    public static ObjectMemoryMeasurer analyze(Object object) {
+        val measurer = new ObjectMemoryMeasurer();
+        measurer.traverse(object);
+        return measurer;
     }
 }
