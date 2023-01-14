@@ -1,6 +1,8 @@
 package com.github.lexakimov.omm.classes;
 
 /**
+ * 24 + 16 = 40 bytes
+ *
  * @author akimov
  * created at: 08.01.2023 13:24
  */
@@ -15,6 +17,9 @@ public class ClassWithTwoIntFieldAndOneNonNullObject {
     int a = 100;
     Object d = new SomeObject();
 
+    /**
+     * 16 bytes
+     */
     public static class SomeObject {
         public static final String FQN =
                 "com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneNonNullObject$SomeObject";
