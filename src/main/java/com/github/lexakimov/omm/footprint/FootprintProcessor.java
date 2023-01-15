@@ -51,7 +51,7 @@ public class FootprintProcessor {
     }
 
     /**
-     * Set custom ordering column and direction.
+     * Set custom ordering column and direction. By default, the list will be sorted in order of appearance.
      *
      * @param orderBy   ordering column.
      * @param direction direction of order.
@@ -113,7 +113,8 @@ public class FootprintProcessor {
     Map<String, Entry> process(ObjectMemoryMeasurer measurer) {
         val resultByType = new TreeMap<String, Entry>();
         val stack = new ArrayDeque<Variable>();
-        stack.push(measurer.getGraphRoot());
+        val graphRoot = measurer.getGraphRoot();
+        stack.push(graphRoot);
 
         while (!stack.isEmpty()) {
             val variable = stack.pop();
@@ -127,7 +128,7 @@ public class FootprintProcessor {
 
                 if (!(variable instanceof HasNestedVariables)) {
                     v.addSize(variable.getSizeInBytes());
-                } else if (isNecessaryToAbort(typeString)) {
+                } else if (isNecessaryToAbort(typeString) && variable != graphRoot) {
                     v.addSize(variable.getSizeInBytes());
                 } else {
                     val variableWithNested = (HasNestedVariables) variable;
