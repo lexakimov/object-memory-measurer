@@ -24,12 +24,15 @@ import java.text.StringCharacterIterator;
  * @author akimov
  * created at: 08.01.2023 08:13
  */
-public class FormatStringUtil {
+public class StringUtils {
+
+    private StringUtils() {
+    }
 
     /**
      * SI (1 k = 1,000)
      */
-    public static String humanReadableByteCountSI(long bytes) {
+    public static String byteCountAsSiString(long bytes) {
         if (-1000 < bytes && bytes < 1000) {
             return bytes + " B";
         }
@@ -44,7 +47,7 @@ public class FormatStringUtil {
     /**
      * Binary (1 Ki = 1,024)
      */
-    public static String humanReadableByteCountBin(long bytes) {
+    public static String byteCountAsBinString(long bytes) {
         long absB = bytes == Long.MIN_VALUE ? Long.MAX_VALUE : Math.abs(bytes);
         if (absB < 1024) {
             return bytes + " B";

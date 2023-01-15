@@ -1,4 +1,4 @@
-package com.github.lexakimov.omm.printers;
+package com.github.lexakimov.omm.footprint;
 
 import java.util.Comparator;
 import java.util.Map;

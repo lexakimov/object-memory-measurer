@@ -1,7 +1,7 @@
 package com.github.lexakimov.omm;
 
-import com.github.lexakimov.omm.printers.FootprintProcessor;
-import com.github.lexakimov.omm.printers.FootprintResult;
+import com.github.lexakimov.omm.footprint.FootprintProcessor;
+import com.github.lexakimov.omm.footprint.FootprintResult;
 import com.github.lexakimov.omm.types.ArrayOfObjects;
 import com.github.lexakimov.omm.types.ArrayOfPrimitivesVariable;
 import com.github.lexakimov.omm.types.HasNestedVariables;
@@ -26,7 +26,6 @@ public class ObjectMemoryMeasurer {
     private Variable graphRoot;
 
     ObjectMemoryMeasurer() {
-
     }
 
     void traverse(boolean object) {
@@ -141,7 +140,6 @@ public class ObjectMemoryMeasurer {
                 }
             }
         }
-
     }
 
     public Variable getGraphRoot() {

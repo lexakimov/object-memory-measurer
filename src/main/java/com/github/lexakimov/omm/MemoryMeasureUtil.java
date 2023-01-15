@@ -5,6 +5,8 @@ import static com.github.lexakimov.omm.util.Logger.info;
 import static java.lang.String.format;
 
 /**
+ * Provides functionality for measuring the amount of memory occupied by a single object or variable of a primitive type.
+ *
  * @author akimov
  * created at: 06.01.2023 13:10
  */

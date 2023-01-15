@@ -1,4 +1,4 @@
-package com.github.lexakimov.omm.printers;
+package com.github.lexakimov.omm.footprint;
 
 import com.github.lexakimov.omm.ObjectMemoryMeasurer;
 import com.github.lexakimov.omm.types.ArrayOfPrimitivesVariable;

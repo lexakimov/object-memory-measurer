@@ -1,4 +1,4 @@
-package com.github.lexakimov.omm.printers;
+package com.github.lexakimov.omm.footprint;
 
 import com.github.lexakimov.omm.ObjectMemoryMeasurer;
 import com.github.lexakimov.omm.types.HasNestedVariables;
@@ -7,7 +7,6 @@ import lombok.EqualsAndHashCode;
 import lombok.val;
 import java.util.ArrayDeque;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -15,7 +14,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
-import static com.github.lexakimov.omm.printers.FootprintResultOrderByDirection.ASC;
+import static com.github.lexakimov.omm.footprint.FootprintResultOrderByDirection.ASC;
 
 /**
  * Process traversing result to plain list.
@@ -26,24 +25,68 @@ import static com.github.lexakimov.omm.printers.FootprintResultOrderByDirection.
 public class FootprintProcessor {
 
     private final Set<String> stopRegExpressions = new HashSet<>();
-    private Consumer<Object> linePrinter = System.out::println;
     private Comparator<Map.Entry<String, Entry>> comparator;
+    private Consumer<Object> linePrinter = System.out::println;
+    private FootprintResultSizeFormat sizeFormat = FootprintResultSizeFormat.BINARY;
     private int limit = -1;
 
+    /**
+     * Add a new graph traversal stop-word.
+     *
+     * @param stopWord stop-word string.
+     */
     public void registerStopWord(String stopWord) {
         Objects.requireNonNull(stopWord);
         stopRegExpressions.add(Pattern.quote(stopWord));
     }
 
+    /**
+     * Add a new graph traversal stop-word as regular expression.
+     *
+     * @param stopWordRegexp stop-word regular expression.
+     */
     public void registerStopWordRegexp(String stopWordRegexp) {
         Objects.requireNonNull(stopWordRegexp);
         stopRegExpressions.add(stopWordRegexp);
     }
 
-    int getLimit() {
-        return limit;
+    /**
+     * Set custom ordering column and direction.
+     *
+     * @param orderBy   ordering column.
+     * @param direction direction of order.
+     */
+    public void setOrderBy(FootprintResultOrderBy orderBy, FootprintResultOrderByDirection direction) {
+        Objects.requireNonNull(orderBy);
+        Objects.requireNonNull(direction);
+        comparator = (direction == ASC) ? orderBy.getComparator() : orderBy.getComparator().reversed();
     }
 
+    /**
+     * Set custom line printing procedure.
+     *
+     * @param linePrinter line printing procedure.
+     */
+    public void setLinePrinter(Consumer<Object> linePrinter) {
+        Objects.requireNonNull(linePrinter);
+        this.linePrinter = linePrinter;
+    }
+
+    /**
+     * Set the output format of size number.
+     *
+     * @param sizeFormat format enum.
+     */
+    public void setSizeFormat(FootprintResultSizeFormat sizeFormat) {
+        Objects.requireNonNull(sizeFormat);
+        this.sizeFormat = sizeFormat;
+    }
+
+    /**
+     * Set object rows limit.
+     *
+     * @param limit positive number of rows.
+     */
     public void setLimit(int limit) {
         if (limit <= 0) {
             throw new IllegalArgumentException("limit must be greater than zero");
@@ -55,76 +98,51 @@ public class FootprintProcessor {
         return comparator;
     }
 
-    public void setOrderBy(FootprintResultOrderBy orderBy, FootprintResultOrderByDirection direction) {
-        Objects.requireNonNull(orderBy);
-        Objects.requireNonNull(direction);
-        comparator = (direction == ASC) ? orderBy.getComparator() : orderBy.getComparator().reversed();
-    }
-
     Consumer<Object> getLinePrinter() {
         return linePrinter;
     }
 
-    public void setLinePrinter(Consumer<Object> linePrinter) {
-        Objects.requireNonNull(linePrinter);
-        this.linePrinter = linePrinter;
+    FootprintResultSizeFormat getSizeFormat() {
+        return sizeFormat;
     }
 
-    private boolean shouldStop(String typeString) {
-        return stopRegExpressions.stream().anyMatch(typeString::matches);
+    int getLimit() {
+        return limit;
     }
 
     Map<String, Entry> process(ObjectMemoryMeasurer measurer) {
-        val graphRoot = measurer.getGraphRoot();
-
         val resultByType = new TreeMap<String, Entry>();
+        val stack = new ArrayDeque<Variable>();
+        stack.push(measurer.getGraphRoot());
 
-        Deque<Variable> stack = new ArrayDeque<>();
-        stack.push(graphRoot);
         while (!stack.isEmpty()) {
             val variable = stack.pop();
             val typeString = variable.getTypeString();
 
             resultByType.compute(typeString, (k, v) -> {
                 if (v == null) {
-                    return new Entry(1, 0);
+                    v = new Entry(0, 0);
                 }
                 v.incrementCount();
-                return v;
-            });
 
-            if (variable instanceof HasNestedVariables) {
-                if (shouldStop(typeString)) {
-                    resultByType.compute(typeString, (k, v) -> {
-                        if (v == null) {
-                            v = new Entry(1, 0);
-                        }
-                        v.addSize(variable.getSizeInBytes());
-                        return v;
-                    });
+                if (!(variable instanceof HasNestedVariables)) {
+                    v.addSize(variable.getSizeInBytes());
+                } else if (isNecessaryToAbort(typeString)) {
+                    v.addSize(variable.getSizeInBytes());
                 } else {
                     val variableWithNested = (HasNestedVariables) variable;
-                    resultByType.compute(typeString, (k, v) -> {
-                        if (v == null) {
-                            v = new Entry(1, 0);
-                        }
-                        v.addSize(variable.getSizeInBytes() - variableWithNested.getNestedVariablesSizeInBytes());
-                        return v;
-                    });
+                    v.addSize(variable.getSizeInBytes() - variableWithNested.getNestedVariablesSizeInBytes());
                     variableWithNested.getNestedVariables().forEach(stack::push);
                 }
-            } else {
-                resultByType.compute(typeString, (k, v) -> {
-                    if (v == null) {
-                        v = new Entry(1, 0);
-                    }
-                    v.addSize(variable.getSizeInBytes());
-                    return v;
-                });
-            }
+                return v;
+            });
         }
 
         return resultByType;
+    }
+
+    private boolean isNecessaryToAbort(String typeString) {
+        return stopRegExpressions.stream().anyMatch(typeString::matches);
     }
 
     @EqualsAndHashCode

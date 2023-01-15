@@ -1,11 +1,15 @@
 package com.github.lexakimov.omm.example;
 
+import com.github.lexakimov.omm.MemoryMeasureUtil;
 import com.github.lexakimov.omm.util.Logger;
 import lombok.var;
 import static com.github.lexakimov.omm.MemoryMeasureUtil.getSizeInBytes;
 import static com.github.lexakimov.omm.MemoryMeasureUtil.printSizeInBytes;
 import static com.github.lexakimov.omm.MemoryMeasureUtil.printWithClassName;
 
+/**
+ * Examples of using class {@link MemoryMeasureUtil}
+ */
 public class MemoryMeasureUtilExample {
 
     public static void main(String[] args) {

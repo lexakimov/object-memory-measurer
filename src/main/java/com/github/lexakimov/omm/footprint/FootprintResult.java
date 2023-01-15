@@ -1,4 +1,4 @@
-package com.github.lexakimov.omm.printers;
+package com.github.lexakimov.omm.footprint;
 
 import com.github.lexakimov.omm.ObjectMemoryMeasurer;
 import lombok.val;
@@ -24,10 +24,11 @@ public class FootprintResult {
 
     public void printOut() {
         val linePrinter = footprintProcessor.getLinePrinter();
+        val sizeFormattingFunction = footprintProcessor.getSizeFormat().getFormattingFunction();
 
         val graphRoot = measurer.getGraphRoot();
         val typeString = graphRoot.getTypeString();
-        linePrinter.accept("memory footprint of instance of " + typeString + ":");
+        linePrinter.accept("memory footprint of " + typeString + " instance:");
 
         String format = "%10s %10s %-60s";
 
@@ -52,12 +53,17 @@ public class FootprintResult {
         for (Map.Entry<String, FootprintProcessor.Entry> entry : stream.collect(Collectors.toList())) {
             String type = entry.getKey();
             val result = entry.getValue();
-            totalSize += result.getSize();
-            totalCount += result.getCount();
-            linePrinter.accept(String.format(format, result.getCount(), result.getSize(), type));
+            totalSize = Math.addExact(totalSize, result.getSize());
+            totalCount = Math.addExact(totalCount, result.getCount());
+            linePrinter.accept(String.format(
+                    format,
+                    result.getCount(),
+                    sizeFormattingFunction.apply(result.getSize()),
+                    type
+            ));
         }
 
         linePrinter.accept("----------------------------------------------------------------------------------");
-        linePrinter.accept(String.format(format, totalCount, totalSize, "Total"));
+        linePrinter.accept(String.format(format, totalCount, sizeFormattingFunction.apply(totalSize), "Total"));
     }
 }
