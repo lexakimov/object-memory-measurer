@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import java.util.TreeMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -264,6 +265,17 @@ class ObjectMemoryMeasurerTest {
 
     @Nested
     class Objects {
+
+        @Test
+        void traverseObjectType_anonymous() {
+            var i = new TreeMap<String, String>(){};
+            var uut = new ObjectMemoryMeasurer();
+            uut.traverse(i);
+            var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
+            assertThat(graphRoot)
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("typeString", "java.util.TreeMap");
+        }
 
         @SuppressWarnings("InstantiationOfUtilityClass")
         @Test

@@ -44,6 +44,18 @@ public class ObjectVariable extends Variable implements HasNestedVariables {
     }
 
     @Override
+    public String getTypeString() {
+        Class<?> clazz = object.getClass();
+        if (clazz.isAnonymousClass()) {
+            return (clazz.getInterfaces().length != 0)
+                    ? clazz.getInterfaces()[0].getTypeName()
+                    : clazz.getSuperclass().getTypeName();
+        }
+
+        return super.getTypeString();
+    }
+
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "{ " +
                "name:'" + name + "', " +
