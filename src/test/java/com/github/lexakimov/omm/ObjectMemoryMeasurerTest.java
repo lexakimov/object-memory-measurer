@@ -554,7 +554,7 @@ class ObjectMemoryMeasurerTest {
             assertThat(graphRoot)
                     .isExactlyInstanceOf(ArrayOfObjects.class)
                     .hasFieldOrPropertyWithValue("typeString", AbstractClass.FQN + "[]")
-                    .hasFieldOrPropertyWithValue("sizeInBytes", 448L);
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 320L);
 
             ArrayOfObjects objectType = (ArrayOfObjects) graphRoot;
 
@@ -564,16 +564,16 @@ class ObjectMemoryMeasurerTest {
             assertThat(nestedVariables.get(0))
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", NonAbstractClass1.FQN)
-                    .hasFieldOrPropertyWithValue("sizeInBytes", 120L);
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 56L);
 
             assertThat(nestedVariables.get(1))
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", NonAbstractClass2.FQN)
-                    .hasFieldOrPropertyWithValue("sizeInBytes", 168L);
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 104L);
 
             assertThat(nestedVariables.get(2))
                     .isExactlyInstanceOf(ObjectVariable.class)
-                    .hasFieldOrPropertyWithValue("typeString", "com.github.lexakimov.omm.ObjectMemoryMeasurerTest$ArraysOfObjects$1")
+                    .hasFieldOrPropertyWithValue("typeString", AbstractClass.FQN)
                     .hasFieldOrPropertyWithValue("sizeInBytes", 112L);
         }
     }
