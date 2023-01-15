@@ -5,6 +5,7 @@ import com.github.lexakimov.omm.util.TriFunction;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import java.util.Deque;
+import java.util.Set;
 
 /**
  * @author akimov
@@ -25,7 +26,11 @@ public abstract class Variable {
         return this.name;
     }
 
-    public void process(Deque<Variable> stack, TriFunction<String, Object, Boolean, Variable> factoryMethod) {
+    public void process(
+            Deque<Variable> stack,
+            Set<Integer> processed,
+            TriFunction<String, Object, Boolean, Variable> factoryMethod
+    ) {
 
     }
 

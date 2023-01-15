@@ -12,6 +12,7 @@ import lombok.val;
 import lombok.var;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -83,9 +84,10 @@ public class ObjectMemoryMeasurer {
     }
 
     private void makeTraverse() {
+        val processedObjects = new HashSet<Integer>();
         while (!stack.isEmpty()) {
             var variable = stack.pop();
-            variable.process(stack, this::variableFactory);
+            variable.process(stack, processedObjects, this::variableFactory);
         }
     }
 

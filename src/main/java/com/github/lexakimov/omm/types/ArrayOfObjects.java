@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 import java.lang.reflect.Array;
 import java.util.Deque;
+import java.util.Set;
 
 /**
  * @author akimov
@@ -18,7 +19,12 @@ public class ArrayOfObjects extends ObjectVariable {
 
     @SneakyThrows
     @Override
-    public void process(Deque<Variable> stack, TriFunction<String, Object, Boolean, Variable> factoryMethod) {
+    public void process(
+            Deque<Variable> stack,
+            Set<Integer> processed,
+            TriFunction<String, Object, Boolean, Variable> factoryMethod
+    ) {
+        processed.add(identityHashCode(this));
         int arrayLength = Array.getLength(object);
         for (int i = 0; i < arrayLength; i++) {
             Object arrayElement = Array.get(object, i);
@@ -27,7 +33,7 @@ public class ArrayOfObjects extends ObjectVariable {
             }
 
             val variable = factoryMethod.apply("[" + i + "]", arrayElement, false);
-            if (variable != null) {
+            if (variable != null && !processed.contains(identityHashCode(variable))) {
                 nestedVariables.add(variable);
                 stack.push(variable);
             }

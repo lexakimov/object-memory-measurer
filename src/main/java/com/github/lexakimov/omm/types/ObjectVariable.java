@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author akimov
@@ -30,13 +31,18 @@ public class ObjectVariable extends Variable implements HasNestedVariables {
 
     @SneakyThrows
     @Override
-    public void process(Deque<Variable> stack, TriFunction<String, Object, Boolean, Variable> factoryMethod) {
+    public void process(
+            Deque<Variable> stack,
+            Set<Integer> processed,
+            TriFunction<String, Object, Boolean, Variable> factoryMethod
+    ) {
+        processed.add(identityHashCode(this));
         var fields = ReflectionUtils.getObjectFields(object, true, true);
         for (Field field : fields) {
             val fieldValue = field.get(object);
             val isPrimitive = field.getType().isPrimitive();
             val variable = factoryMethod.apply(field.getName(), fieldValue, isPrimitive);
-            if (variable != null) {
+            if (variable != null && !processed.contains(identityHashCode(variable))) {
                 nestedVariables.add(variable);
                 stack.push(variable);
             }
@@ -78,6 +84,10 @@ public class ObjectVariable extends Variable implements HasNestedVariables {
             nestedVariablesSize = nestedVariables.stream().mapToLong(Variable::getSizeInBytes).sum();
         }
         return nestedVariablesSize;
+    }
+
+    static int identityHashCode(Variable variable) {
+        return System.identityHashCode(variable.getObject());
     }
 
 }

@@ -1,6 +1,7 @@
 package com.github.lexakimov.omm;
 
 import com.github.lexakimov.omm.classes.AbstractClass;
+import com.github.lexakimov.omm.classes.ClassWithCyclicLoop;
 import com.github.lexakimov.omm.classes.ClassWithOneIntField;
 import com.github.lexakimov.omm.classes.ClassWithTwoIntField;
 import com.github.lexakimov.omm.classes.ClassWithTwoIntFieldAndOneLong;
@@ -21,6 +22,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import java.util.TreeMap;
@@ -432,6 +434,54 @@ class ObjectMemoryMeasurerTest {
                     .hasFieldOrPropertyWithValue("typeString", ClassWithTwoNonNullObjects.NonNullObject3.FQN)
                     .hasFieldOrPropertyWithValue("sizeInBytes", 8248L)
                     .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 8224L);
+        }
+
+        /**
+         * ClassWithCyclicLoop 128 ╌╌╌╌╌╌╌╌╌╌╌╌┐
+         *     Boolean                 24 + 16 ┊
+         *     int                     16      ┊
+         *     InnerClass              24 + 48 ┊
+         *         Long                24 + 24 ┊
+         *         ClassWithCyclicLoop 24 + 0  ┘
+         */
+        @Test
+        @Timeout(value = 5, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
+        void traverseObjectTypeWithCyclicLoop() {
+            var i = new ClassWithCyclicLoop();
+
+            var uut = new ObjectMemoryMeasurer();
+            uut.traverse(i);
+            var graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
+            assertThat(graphRoot)
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("name", "Root")
+                    .hasFieldOrPropertyWithValue("typeString", ClassWithCyclicLoop.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 88L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 64L);
+
+            var nestedVariables = ((ObjectVariable) graphRoot).getNestedVariables();
+
+            assertThat(nestedVariables.get(0))
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("name", "a")
+                    .hasFieldOrPropertyWithValue("typeString", "java.lang.Boolean")
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L);
+
+            assertThat(nestedVariables.get(1))
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("name", "inner")
+                    .hasFieldOrPropertyWithValue("typeString", ClassWithCyclicLoop.InnerClass.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 48L)
+                    .hasFieldOrPropertyWithValue("nestedVariablesSizeInBytes", 24L);
+
+            nestedVariables = ((ObjectVariable) nestedVariables.get(1)).getNestedVariables();
+
+            assertThat(nestedVariables)
+                    .singleElement()
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("name", "a")
+                    .hasFieldOrPropertyWithValue("typeString", "java.lang.Long")
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 24L);
         }
     }
 
