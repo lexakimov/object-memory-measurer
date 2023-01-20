@@ -24,7 +24,7 @@ import static com.github.lexakimov.omm.footprint.FootprintResultOrderByDirection
  */
 public class FootprintProcessor {
 
-    private final Set<String> stopRegExpressions = new HashSet<>();
+    private final Set<Pattern> stopRegExpressions = new HashSet<>();
     private Comparator<Map.Entry<String, Entry>> comparator;
     private Consumer<Object> linePrinter = System.out::println;
     private FootprintResultSizeFormat sizeFormat = FootprintResultSizeFormat.BINARY;
@@ -37,7 +37,7 @@ public class FootprintProcessor {
      */
     public void registerStopWord(String stopWord) {
         Objects.requireNonNull(stopWord);
-        stopRegExpressions.add(Pattern.quote(stopWord));
+        stopRegExpressions.add(Pattern.compile(stopWord, Pattern.LITERAL));
     }
 
     /**
@@ -47,7 +47,7 @@ public class FootprintProcessor {
      */
     public void registerStopWordRegexp(String stopWordRegexp) {
         Objects.requireNonNull(stopWordRegexp);
-        stopRegExpressions.add(stopWordRegexp);
+        stopRegExpressions.add(Pattern.compile(stopWordRegexp));
     }
 
     /**
@@ -143,7 +143,7 @@ public class FootprintProcessor {
     }
 
     private boolean isNecessaryToAbort(String typeString) {
-        return stopRegExpressions.stream().anyMatch(typeString::matches);
+        return stopRegExpressions.stream().anyMatch(regex -> regex.matcher(typeString).matches());
     }
 
     @EqualsAndHashCode
