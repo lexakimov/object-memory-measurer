@@ -8,8 +8,8 @@ import lombok.SneakyThrows;
 import lombok.val;
 import lombok.var;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +21,7 @@ import java.util.Set;
 public class ObjectVariable extends Variable implements HasNestedVariables {
 
     @Getter
-    protected final List<Variable> nestedVariables = new LinkedList<>();
+    protected final List<Variable> nestedVariables = new ArrayList<>();
 
     private long nestedVariablesSize = -1;
 
