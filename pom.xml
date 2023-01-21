@@ -32,7 +32,46 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <originalSourceDir>${project.basedir}/src/main/java</originalSourceDir>
+        <delombokSourceDir>${project.build.directory}/delombok</delombokSourceDir>
+        <sourceDirectory>${originalSourceDir}</sourceDirectory>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>build-jar</id>
+            <properties>
+                <sourceDirectory>${delombokSourceDir}</sourceDirectory>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok-maven-plugin</artifactId>
+                        <version>1.18.20.0</version>
+                        <configuration>
+                            <sourceDirectory>${originalSourceDir}</sourceDirectory>
+                            <outputDirectory>${delombokSourceDir}</outputDirectory>
+                            <addOutputDirectory>false</addOutputDirectory>
+                            <formatPreferences>
+                                <generateDelombokComment>skip</generateDelombokComment>
+                                <suppressWarnings>skip</suppressWarnings>
+                                <javaLangAsFQN>skip</javaLangAsFQN>
+                            </formatPreferences>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>delombok</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
@@ -64,6 +103,7 @@
 
     <build>
         <finalName>object-memory-measurer</finalName>
+        <sourceDirectory>${sourceDirectory}</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
