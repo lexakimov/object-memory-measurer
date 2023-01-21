@@ -24,7 +24,7 @@ public class UnsafeUtil {
         });
     }
 
-    private static int arrayObjectBase = UNSAFE.arrayBaseOffset(Object[].class);
+    private static long arrayObjectBase = UNSAFE.arrayBaseOffset(Object[].class);
 
     private static final ThreadLocal<Object[]> BUFFERS = ThreadLocal.withInitial(() -> new Object[1]);
 
