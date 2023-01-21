@@ -5,10 +5,10 @@
 
 ## Сборка
 
-Необходимо наличие JDK >= 8
+Необходимо наличие JDK 8
 
 ```shell
-./mvnw clean install
+./mvnw clean install -Pbuild-jar
 ```
 
 ## Использование
@@ -50,3 +50,13 @@ ObjectMemoryMeasurer.analyze(objectToAnalyze).getFootprint().printOut();
 ```shell
 java -jar -javaagent:target/object-memory-measurer.jar target/object-memory-measurer.jar
 ```
+
+## Пример вывода в консоль:
+
+> <span style="color:green">green text<br>
+> <span style="color:green">green text<br>
+> <span style="color:green">green text<br>
+> <span style="color:green">green text<br>
+> <span style="color:green">green text<br>
+
+Также доступен вывод в html
