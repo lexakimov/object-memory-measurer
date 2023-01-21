@@ -24,27 +24,26 @@ public class UnsafeUtil {
         });
     }
 
-    private static long arrayObjectBase = UNSAFE.arrayBaseOffset(Object[].class);
+    private static final long arrayObjectBase = UNSAFE.arrayBaseOffset(Object[].class);
 
-    private static final ThreadLocal<Object[]> BUFFERS = ThreadLocal.withInitial(() -> new Object[1]);
+    private static final Object[] BUFFER = new Object[1];
 
     public static long addressOf(Object o) {
-        Object[] array = BUFFERS.get();
-        array[0] = o;
+        BUFFER[0] = o;
         long objectAddress;
         int oopSize = guessOopSize();
         switch (oopSize) {
             case 4:
-                objectAddress = UNSAFE.getInt(array, arrayObjectBase) & 0xFFFFFFFFL;
+                objectAddress = UNSAFE.getInt(BUFFER, arrayObjectBase) & 0xFFFFFFFFL;
                 break;
             case 8:
-                objectAddress = UNSAFE.getLong(array, arrayObjectBase);
+                objectAddress = UNSAFE.getLong(BUFFER, arrayObjectBase);
                 break;
             default:
                 throw new Error("unsupported address size: " + oopSize);
         }
 
-        array[0] = null;
+        BUFFER[0] = null;
 
         return objectAddress;
     }
