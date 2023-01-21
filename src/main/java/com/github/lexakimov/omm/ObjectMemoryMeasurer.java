@@ -84,7 +84,7 @@ public class ObjectMemoryMeasurer {
     }
 
     private void makeTraverse() {
-        val processedObjects = new HashSet<Integer>();
+        val processedObjects = new HashSet<Long>();
         while (!stack.isEmpty()) {
             var variable = stack.pop();
             variable.process(stack, processedObjects, this::variableFactory);

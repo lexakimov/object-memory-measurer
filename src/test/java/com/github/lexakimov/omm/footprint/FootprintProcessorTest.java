@@ -1,11 +1,14 @@
 package com.github.lexakimov.omm.footprint;
 
 import com.github.lexakimov.omm.ObjectMemoryMeasurer;
+import com.github.lexakimov.omm.classes.ClassWithoutFields;
+import com.github.lexakimov.omm.types.ArrayOfObjects;
 import com.github.lexakimov.omm.types.ArrayOfPrimitivesVariable;
 import com.github.lexakimov.omm.types.ObjectVariable;
 import com.github.lexakimov.omm.types.PrimitiveVariable;
 import com.github.lexakimov.omm.types.Variable;
 import lombok.val;
+import lombok.var;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import java.util.HashMap;
@@ -238,6 +241,62 @@ class FootprintProcessorTest {
                 .hasFieldOrPropertyWithValue("size", 120L);
     }
 
+    @Test
+    void sameObjectsInArray() {
+        var obj1 = new ClassWithoutFields();
+        var obj2 = new ClassWithoutFields();
+        var obj3 = new ClassWithoutFields();
+        var arr = new Object[]{obj1, obj1, obj1, obj2, obj3, obj2, obj3, obj2, obj3, obj3};
+        val root = new ArrayOfObjects("Root", arr);
+
+        val nested0 = new ObjectVariable("[0]", obj1);
+        nested0.getNestedVariablesSizeInBytes();
+        root.getNestedVariables().add(nested0);
+        val nested1 = new ObjectVariable("[1]", obj1);
+        nested1.getNestedVariablesSizeInBytes();
+        root.getNestedVariables().add(nested1);
+        val nested2 = new ObjectVariable("[2]", obj1);
+        nested2.getNestedVariablesSizeInBytes();
+        root.getNestedVariables().add(nested2);
+        val nested3 = new ObjectVariable("[3]", obj2);
+        nested3.getNestedVariablesSizeInBytes();
+        root.getNestedVariables().add(nested3);
+        val nested4 = new ObjectVariable("[4]", obj3);
+        nested4.getNestedVariablesSizeInBytes();
+        root.getNestedVariables().add(nested4);
+        val nested5 = new ObjectVariable("[5]", obj2);
+        nested5.getNestedVariablesSizeInBytes();
+        root.getNestedVariables().add(nested5);
+        val nested6 = new ObjectVariable("[6]", obj3);
+        nested6.getNestedVariablesSizeInBytes();
+        root.getNestedVariables().add(nested6);
+        val nested7 = new ObjectVariable("[7]", obj2);
+        nested7.getNestedVariablesSizeInBytes();
+        root.getNestedVariables().add(nested7);
+        val nested8 = new ObjectVariable("[8]", obj3);
+        nested8.getNestedVariablesSizeInBytes();
+        root.getNestedVariables().add(nested8);
+        val nested9 = new ObjectVariable("[9]", obj3);
+        nested9.getNestedVariablesSizeInBytes();
+        root.getNestedVariables().add(nested9);
+        root.getNestedVariablesSizeInBytes();
+
+        val measurer = mockMeasurer(root);
+        val uut = new FootprintProcessor();
+        val result = uut.process(measurer);
+        val mapAssert = assertThat(result).hasSize(2);
+        mapAssert
+                .extractingByKey("java.lang.Object[]")
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("count", 1L)
+                .hasFieldOrPropertyWithValue("size", 56L);
+        mapAssert
+                .extractingByKey("com.github.lexakimov.omm.classes.ClassWithoutFields")
+                .isNotNull()
+                .hasFieldOrPropertyWithValue("count", 3L)
+                .hasFieldOrPropertyWithValue("size", 48L);
+    }
+
     private static ObjectMemoryMeasurer mockMeasurer(Variable root) {
         val measurer = Mockito.mock(ObjectMemoryMeasurer.class);
         when(measurer.getGraphRoot()).thenReturn(root);
@@ -255,10 +314,10 @@ class FootprintProcessorTest {
         val nested1_1 = new ObjectVariable("lev 1 obj 1", Long.valueOf(123));
         nested1_1.getNestedVariablesSizeInBytes();
         val nested1_2 = new ObjectVariable("lev 1 obj 2", Double.valueOf(1));
-        val nested2_1 = new ObjectVariable("lev 2 obj 1", Long.valueOf(123));
+        val nested2_1 = new ObjectVariable("lev 2 obj 1", Long.valueOf(345));
         nested2_1.getNestedVariablesSizeInBytes();
         val nested2_2 = new ObjectVariable("lev 2 obj 2", new HashMap<>(1));
-        val nested3_1 = new ObjectVariable("lev 3 obj 1", Double.valueOf(1));
+        val nested3_1 = new ObjectVariable("lev 3 obj 1", Double.valueOf(2));
         nested3_1.getNestedVariablesSizeInBytes();
         nested2_2.getNestedVariables().add(nested3_1);
         nested2_2.getNestedVariablesSizeInBytes();

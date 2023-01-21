@@ -12,11 +12,13 @@ import com.github.lexakimov.omm.classes.ClassWithTwoNonNullObjects;
 import com.github.lexakimov.omm.classes.ClassWithoutFields;
 import com.github.lexakimov.omm.classes.NonAbstractClass1;
 import com.github.lexakimov.omm.classes.NonAbstractClass2;
+import com.github.lexakimov.omm.classes.Person;
 import com.github.lexakimov.omm.types.ArrayOfObjects;
 import com.github.lexakimov.omm.types.ArrayOfPrimitivesVariable;
 import com.github.lexakimov.omm.types.ObjectVariable;
 import com.github.lexakimov.omm.types.PrimitiveVariable;
 import com.github.lexakimov.omm.types.Variable;
+import lombok.val;
 import lombok.var;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -556,9 +559,8 @@ class ObjectMemoryMeasurerTest {
                     .hasFieldOrPropertyWithValue("typeString", AbstractClass.FQN + "[]")
                     .hasFieldOrPropertyWithValue("sizeInBytes", 320L);
 
-            ArrayOfObjects objectType = (ArrayOfObjects) graphRoot;
-
-            var nestedVariables = objectType.getNestedVariables();
+            val arrayOfObjects = (ArrayOfObjects) graphRoot;
+            var nestedVariables = arrayOfObjects.getNestedVariables();
             assertThat(nestedVariables).hasSize(3);
 
             assertThat(nestedVariables.get(0))
@@ -575,6 +577,71 @@ class ObjectMemoryMeasurerTest {
                     .isExactlyInstanceOf(ObjectVariable.class)
                     .hasFieldOrPropertyWithValue("typeString", AbstractClass.FQN)
                     .hasFieldOrPropertyWithValue("sizeInBytes", 112L);
+        }
+
+        @Test
+        void traverseObjectArray_6() {
+            var obj1 = new ClassWithoutFields();
+            var obj2 = new ClassWithoutFields();
+            var obj3 = new ClassWithoutFields();
+            var i = new Object[]{obj1, obj1, obj1, obj2, obj3, obj2, obj3, obj2, obj3, obj3};
+            var uut = new ObjectMemoryMeasurer();
+            uut.traverse(i);
+
+            val graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
+            assertThat(graphRoot)
+                    .isExactlyInstanceOf(ArrayOfObjects.class)
+                    .hasFieldOrPropertyWithValue("typeString", "java.lang.Object[]")
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 104L);
+
+            val arrayOfObjects = (ArrayOfObjects) graphRoot;
+            var nestedVariables = arrayOfObjects.getNestedVariables();
+            assertThat(nestedVariables).hasSize(3);
+
+            assertThat(nestedVariables.get(0))
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("typeString", ClassWithoutFields.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L)
+                    .hasFieldOrPropertyWithValue("object", obj1);
+
+            assertThat(nestedVariables.get(1))
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("typeString", ClassWithoutFields.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L)
+                    .hasFieldOrPropertyWithValue("object", obj2);
+
+            assertThat(nestedVariables.get(2))
+                    .isExactlyInstanceOf(ObjectVariable.class)
+                    .hasFieldOrPropertyWithValue("typeString", ClassWithoutFields.FQN)
+                    .hasFieldOrPropertyWithValue("sizeInBytes", 16L)
+                    .hasFieldOrPropertyWithValue("object", obj3);
+        }
+
+        @Test
+        void traverseObjectArray_7() {
+            val objects = new ArrayList<>();
+
+            for (int i = 0; i < 100_000; i++) {
+                objects.add(new Person(
+                        String.valueOf(System.currentTimeMillis()),
+                        String.valueOf(System.currentTimeMillis()),
+                        System.currentTimeMillis()
+                ));
+            }
+
+            var uut = new ObjectMemoryMeasurer();
+            uut.traverse(objects);
+
+            val graphRoot = assertDoesNotThrow(() -> uut.getGraphRoot());
+            assertThat(graphRoot).isExactlyInstanceOf(ObjectVariable.class);
+
+            var nestedVariable = ((ObjectVariable) graphRoot).getNestedVariables().get(0);
+            assertThat(nestedVariable).isExactlyInstanceOf(ArrayOfObjects.class);
+
+            var nestedVariables = ((ArrayOfObjects) nestedVariable).getNestedVariables();
+            assertThat(nestedVariables)
+                    .hasSize(objects.size())
+                    .allMatch(v -> v.getTypeString().equals("com.github.lexakimov.omm.classes.Person"));
         }
     }
 

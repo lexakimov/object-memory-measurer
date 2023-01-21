@@ -21,7 +21,7 @@ public class ArrayOfObjects extends ObjectVariable {
     @Override
     public void process(
             Deque<Variable> stack,
-            Set<Integer> processed,
+            Set<Long> processed,
             TriFunction<String, Object, Boolean, Variable> factoryMethod
     ) {
         processed.add(identityHashCode(this));
@@ -33,9 +33,13 @@ public class ArrayOfObjects extends ObjectVariable {
             }
 
             val variable = factoryMethod.apply("[" + i + "]", arrayElement, false);
-            if (variable != null && !processed.contains(identityHashCode(variable))) {
-                nestedVariables.add(variable);
-                stack.push(variable);
+            if (variable != null) {
+                long identityHashCode = identityHashCode(variable);
+                if (!processed.contains(identityHashCode)) {
+                    nestedVariables.add(variable);
+                    stack.push(variable);
+                    processed.add(identityHashCode);
+                }
             }
         }
     }

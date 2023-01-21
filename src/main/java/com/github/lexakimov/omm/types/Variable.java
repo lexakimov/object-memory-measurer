@@ -28,7 +28,7 @@ public abstract class Variable {
 
     public void process(
             Deque<Variable> stack,
-            Set<Integer> processed,
+            Set<Long> processed,
             TriFunction<String, Object, Boolean, Variable> factoryMethod
     ) {
 

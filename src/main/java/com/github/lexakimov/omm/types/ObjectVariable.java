@@ -2,6 +2,7 @@ package com.github.lexakimov.omm.types;
 
 import com.github.lexakimov.omm.util.ReflectionUtils;
 import com.github.lexakimov.omm.util.TriFunction;
+import com.github.lexakimov.omm.util.UnsafeUtil;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -33,7 +34,7 @@ public class ObjectVariable extends Variable implements HasNestedVariables {
     @Override
     public void process(
             Deque<Variable> stack,
-            Set<Integer> processed,
+            Set<Long> processed,
             TriFunction<String, Object, Boolean, Variable> factoryMethod
     ) {
         processed.add(identityHashCode(this));
@@ -86,8 +87,8 @@ public class ObjectVariable extends Variable implements HasNestedVariables {
         return nestedVariablesSize;
     }
 
-    static int identityHashCode(Variable variable) {
-        return System.identityHashCode(variable.getObject());
+    public static long identityHashCode(Variable variable) {
+        return UnsafeUtil.addressOf(variable.object);
     }
 
 }

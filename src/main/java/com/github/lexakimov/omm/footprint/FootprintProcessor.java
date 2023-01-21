@@ -2,6 +2,7 @@ package com.github.lexakimov.omm.footprint;
 
 import com.github.lexakimov.omm.ObjectMemoryMeasurer;
 import com.github.lexakimov.omm.types.HasNestedVariables;
+import com.github.lexakimov.omm.types.ObjectVariable;
 import com.github.lexakimov.omm.types.Variable;
 import lombok.EqualsAndHashCode;
 import lombok.val;
@@ -111,6 +112,7 @@ public class FootprintProcessor {
     }
 
     Map<String, Entry> process(ObjectMemoryMeasurer measurer) {
+        val processedObjects = new HashSet<Long>();
         val resultByType = new TreeMap<String, Entry>();
         val stack = new ArrayDeque<Variable>();
         val graphRoot = measurer.getGraphRoot();
@@ -120,15 +122,21 @@ public class FootprintProcessor {
             val variable = stack.pop();
             val typeString = variable.getTypeString();
 
+            long identityHashCode = ObjectVariable.identityHashCode(variable);
+            if (processedObjects.contains(identityHashCode)) {
+                continue;
+            }
+            processedObjects.add(identityHashCode);
+
             resultByType.compute(typeString, (k, v) -> {
                 if (v == null) {
                     v = new Entry(0, 0);
                 }
                 v.incrementCount();
 
-                if (!(variable instanceof HasNestedVariables)) {
-                    v.addSize(variable.getSizeInBytes());
-                } else if (isNecessaryToAbort(typeString) && variable != graphRoot) {
+                if (!(variable instanceof HasNestedVariables) ||
+                    isNecessaryToAbort(typeString) && variable != graphRoot
+                ) {
                     v.addSize(variable.getSizeInBytes());
                 } else {
                     val variableWithNested = (HasNestedVariables) variable;
