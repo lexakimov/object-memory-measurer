@@ -35,10 +35,9 @@ public class ArrayOfObjects extends ObjectVariable {
             val variable = factoryMethod.apply("[" + i + "]", arrayElement, false);
             if (variable != null) {
                 long identityHashCode = identityHashCode(variable);
-                if (!processed.contains(identityHashCode)) {
+                if (processed.add(identityHashCode)) {
                     nestedVariables.add(variable);
                     stack.push(variable);
-                    processed.add(identityHashCode);
                 }
             }
         }
