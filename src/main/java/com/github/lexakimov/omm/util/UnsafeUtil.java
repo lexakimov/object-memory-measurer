@@ -48,11 +48,16 @@ public class UnsafeUtil {
         return objectAddress;
     }
 
+    private static int oopSize = -1;
+
     private static int guessOopSize() {
         // When running with CompressedOops on 64-bit platform, the address size
         // reported by Unsafe is still 8, while the real reference fields are 4 bytes long.
         // Try to guess the reference field size with this naive trick.
-        int oopSize;
+        if (oopSize > 0) {
+            return oopSize;
+        }
+
         try {
             long off1 = UNSAFE.objectFieldOffset(CompressedOopsClass.class.getField("obj1"));
             long off2 = UNSAFE.objectFieldOffset(CompressedOopsClass.class.getField("obj2"));
