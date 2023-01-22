@@ -8,11 +8,11 @@ import com.github.lexakimov.omm.types.HasNestedVariables;
 import com.github.lexakimov.omm.types.ObjectVariable;
 import com.github.lexakimov.omm.types.PrimitiveVariable;
 import com.github.lexakimov.omm.types.Variable;
+import com.github.lexakimov.omm.util.LongHashSet;
 import lombok.val;
 import lombok.var;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -84,7 +84,7 @@ public class ObjectMemoryMeasurer {
     }
 
     private void makeTraverse() {
-        val processedObjects = new HashSet<Long>();
+        val processedObjects = new LongHashSet();
         while (!stack.isEmpty()) {
             var variable = stack.pop();
             variable.process(stack, processedObjects, this::variableFactory);

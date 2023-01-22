@@ -1,5 +1,6 @@
 package com.github.lexakimov.omm.types;
 
+import com.github.lexakimov.omm.util.LongHashSet;
 import com.github.lexakimov.omm.util.ReflectionUtils;
 import com.github.lexakimov.omm.util.TriFunction;
 import com.github.lexakimov.omm.util.UnsafeUtil;
@@ -12,7 +13,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author akimov
@@ -34,7 +34,7 @@ public class ObjectVariable extends Variable implements HasNestedVariables {
     @Override
     public void process(
             Deque<Variable> stack,
-            Set<Long> processed,
+            LongHashSet processed,
             TriFunction<String, Object, Boolean, Variable> factoryMethod
     ) {
         processed.add(identityHashCode(this));

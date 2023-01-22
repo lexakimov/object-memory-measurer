@@ -1,11 +1,11 @@
 package com.github.lexakimov.omm.types;
 
 import com.github.lexakimov.omm.MemoryMeasureUtil;
+import com.github.lexakimov.omm.util.LongHashSet;
 import com.github.lexakimov.omm.util.TriFunction;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import java.util.Deque;
-import java.util.Set;
 
 /**
  * @author akimov
@@ -28,7 +28,7 @@ public abstract class Variable {
 
     public void process(
             Deque<Variable> stack,
-            Set<Long> processed,
+            LongHashSet processed,
             TriFunction<String, Object, Boolean, Variable> factoryMethod
     ) {
 

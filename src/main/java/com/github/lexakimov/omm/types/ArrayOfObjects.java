@@ -1,11 +1,11 @@
 package com.github.lexakimov.omm.types;
 
+import com.github.lexakimov.omm.util.LongHashSet;
 import com.github.lexakimov.omm.util.TriFunction;
 import lombok.SneakyThrows;
 import lombok.val;
 import java.lang.reflect.Array;
 import java.util.Deque;
-import java.util.Set;
 
 /**
  * @author akimov
@@ -21,7 +21,7 @@ public class ArrayOfObjects extends ObjectVariable {
     @Override
     public void process(
             Deque<Variable> stack,
-            Set<Long> processed,
+            LongHashSet processed,
             TriFunction<String, Object, Boolean, Variable> factoryMethod
     ) {
         processed.add(identityHashCode(this));
