@@ -5,15 +5,19 @@ package com.github.lexakimov.omm.util;
  */
 public class LongHashSet {
 
+    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+    private static final float MAX_LOAD_FACTOR = 99 / 100.0f;
+    private static final float MIN_LOAD_FACTOR = 1 / 100.0f;
+    private static final int DEFAULT_EXPECTED_ELEMENTS = 4;
+    private static final int MAX_HASH_ARRAY_LENGTH = 0x80000000 >>> 1;
+    private static final long PHI_C64 = 0x9e3779b97f4a7c15L;
+
     private long[] keys;
     private int assigned;
     private int mask;
     private int resizeAt;
     private boolean hasEmptyKey;
     private double loadFactor;
-
-    private static final int DEFAULT_EXPECTED_ELEMENTS = 4;
-    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
 
     public LongHashSet() {
         this(DEFAULT_EXPECTED_ELEMENTS, DEFAULT_LOAD_FACTOR);
@@ -138,15 +142,10 @@ public class LongHashSet {
         return mixPhi(key);
     }
 
-    private static final long PHI_C64 = 0x9e3779b97f4a7c15L;
-
     private static int mixPhi(long k) {
         final long h = k * PHI_C64;
         return (int) (h ^ (h >>> 32));
     }
-
-    private static final float MIN_LOAD_FACTOR = 1 / 100.0f;
-    private static final float MAX_LOAD_FACTOR = 99 / 100.0f;
 
     private double verifyLoadFactor(double loadFactor) {
         checkLoadFactor(loadFactor, MIN_LOAD_FACTOR, MAX_LOAD_FACTOR);
@@ -232,8 +231,6 @@ public class LongHashSet {
         // Rehash old keys, including the pending key.
         rehash(prevKeys);
     }
-
-    private static final int MAX_HASH_ARRAY_LENGTH = 0x80000000 >>> 1;
 
     private static int nextBufferSize(int arraySize, int elements, double loadFactor) {
         assert checkPowerOfTwo(arraySize);
