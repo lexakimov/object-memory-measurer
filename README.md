@@ -24,10 +24,10 @@
 </dependency>
 ```
 
-Создайте экземпляр класса `ObjectGraphTraverser` и передайте в него исследуемый объект:
+Передайте в статический метод `ObjectMemoryMeasurer#analyze()` исследуемый объект:
 
 ```java
-var obj = new HashMap<String, StringBuilder>();
+var objectToAnalyze = new HashMap<String, StringBuilder>();
 ObjectMemoryMeasurer.analyze(objectToAnalyze).getFootprint().printOut();
 ```
 
@@ -37,7 +37,7 @@ ObjectMemoryMeasurer.analyze(objectToAnalyze).getFootprint().printOut();
 -javaagent:path/to/object-memory-measurer-0.1.0.jar
 ```
 
-Для версий Java >= 9 может потребоваться указание дополнительных параметров;
+Для версий Java ≥ 9 требуется указание дополнительных параметров:
 
 ```shell
 --add-opens java.base/java.lang=ALL-UNNAMED
@@ -52,11 +52,18 @@ java -jar -javaagent:target/object-memory-measurer.jar target/object-memory-meas
 ```
 
 ## Пример вывода в консоль:
-
-> <span style="color:green">green text<br>
-> <span style="color:green">green text<br>
-> <span style="color:green">green text<br>
-> <span style="color:green">green text<br>
-> <span style="color:green">green text<br>
-
-Также доступен вывод в html
+```
+[java object memory meter]: memory footprint of java.util.HashMap instance:
+[java object memory meter]:      Count       Size Type                                                        
+[java object memory meter]:          1       16 B java.lang.Boolean                                           
+[java object memory meter]:          1       24 B java.lang.Long                                              
+[java object memory meter]:          1       16 B java.lang.Object                                            
+[java object memory meter]:          7      336 B java.lang.String                                            
+[java object memory meter]:          2      464 B java.util.HashMap                                           
+[java object memory meter]:          8      256 B java.util.HashMap$Node                                      
+[java object memory meter]:          1       80 B java.util.HashMap$Node[]                                    
+[java object memory meter]:          1      272 B java.util.LinkedHashMap                                     
+[java object memory meter]:          1      216 B java.util.TreeMap                                           
+[java object memory meter]: ----------------------------------------------------------------------------------
+[java object memory meter]:         23    1,6 KiB Total                                                       
+```
